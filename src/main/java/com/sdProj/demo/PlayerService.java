@@ -29,7 +29,7 @@ public class PlayerService
         System.out.println(player);
         playerRepository.save(player);    
     }
-
+/*
     public Optional<Player> getPlayer(int id) {
         return playerRepository.findById(id);
     }
@@ -40,5 +40,5 @@ public class PlayerService
         if (!p.isEmpty())
             p.get().setOffice(newoffice);
     }
-
+*/
 }    

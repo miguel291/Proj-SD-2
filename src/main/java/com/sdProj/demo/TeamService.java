@@ -30,15 +30,15 @@ public class TeamService
         teamRepository.save(Team);    
     }
 
-    public Optional<Team> getTeam(int id) {
-        return teamRepository.findById(id);
+    public Team getTeamByName(String name) {
+        return teamRepository.findByName(name);
     }
-
+/*
     @Transactional
     public void changeTeamOffice(int id, String newoffice) {
         Optional<Team> p = teamRepository.findById(id);
         if (!p.isEmpty())
             p.get().setOffice(newoffice);
     }
-
+*/
 }    

@@ -29,7 +29,7 @@ public class UserService
         System.out.println(User);
         userRepository.save(User);    
     }
-
+/*
     public Optional<User> getUser(int id) {
         return userRepository.findById(id);
     }
@@ -40,5 +40,5 @@ public class UserService
         if (!p.isEmpty())
             p.get().setOffice(newoffice);
     }
-
+*/
 }    

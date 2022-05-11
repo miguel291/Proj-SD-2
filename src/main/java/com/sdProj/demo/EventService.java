@@ -33,12 +33,12 @@ public class EventService
     public Optional<Event> getEvent(int id) {
         return eventRepository.findById(id);
     }
-
+/*
     @Transactional
     public void changeProfOffice(int id, String newoffice) {
         Optional<Event> p = eventRepository.findById(id);
         if (!p.isEmpty())
             p.get().setOffice(newoffice);
-    }
+    }*/
 
 }    

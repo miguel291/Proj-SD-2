@@ -33,12 +33,12 @@ public class GameService
     public Optional<Game> getGame(int id) {
         return gameRepository.findById(id);
     }
-
+/*
     @Transactional
     public void changeGameOffice(int id, String newoffice) {
         Optional<Game> p = gameRepository.findById(id);
         if (!p.isEmpty())
             p.get().setOffice(newoffice);
     }
-
+*/
 }    

@@ -1,16 +1,20 @@
 package com.sdProj.demo;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 import com.sdProj.data.Event;
 import com.sdProj.data.Team;
 import com.sdProj.data.Player;
+import com.sdProj.data.Professor;
 import com.sdProj.data.User;
 import com.sdProj.data.Game;
 import com.sdProj.data.Student;
 import com.sdProj.formdata.FormData;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,14 +23,106 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.sql.SQLException;
+
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 @Controller
 public class DataController {
+
+    HttpResponse <JsonNode> response;
+    HttpResponse <JsonNode> response2;
+
+    @Autowired
+    StudentService studentService;
+
     @Autowired
     ProfService profService;
 
     @Autowired
-    StudentService studentService;
+    GameService gameService;
+
+    @Autowired
+    PlayerService playerService;
+
+    @Autowired
+    TeamService teamService;
+
+    @Autowired
+    EventService eventService;
+
+    @Autowired
+    UserService userService;
+
+    @GetMapping("/testing")
+    public String test() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonParser jp = new JsonParser();
+        JsonElement je = jp.parse(response.getBody().toString());
+        String prettyJsonString = gson.toJson(je);
+        //JSONArray jsonArray = new JSONArray(response.getBody());
+        //final Team[] phoneResponses = new Gson().fromJson(response.toString(), Team[].class);
+        /*Iterator<String> keys = jsonArray.keys();
+
+        while(keys.hasNext()) {
+            String key = keys.next();
+            if (jsonArray.get(key) instanceof JSONArray) {
+                  // do something with jsonArray here      
+            }
+        }*/
+       /* for(Team team : phoneResponses) {
+            System.out.println(team.getName());
+        }*/
+        return "createData";
+    }
+
+
+    @GetMapping("/createPlayers")
+    public String getPlayers(Model model) {
+        model.addAttribute("players", this.playerService.getAllPlayers());
+        JSONObject content = response2.getBody().getObject();
+        JSONArray r = content.getJSONArray("response");
+        for (int i = 0; i < r.length(); i++) {
+            Team t = teamService.getTeamByName(
+                r.getJSONObject(i)
+                .getJSONArray("statistics")
+                .getJSONObject(0).getJSONObject("team")
+                .getString("name")
+            );
+            content = r.getJSONObject(i).getJSONObject("player");
+            System.out.println(t.getName()+'\n');
+            //System.out.println(r.getJSONObject(i).getString("name") + " " + r.getJSONObject(i).getString("position") +"\n");
+            //java.sql.Date sqlDateOfBirth = java.sql.Date.valueOf(content.getJSONObject("birth").getString("date"));
+            java.sql.Date sqlDateOfBirth = java.sql.Date.valueOf("1995-12-25");
+            Player a = new Player(content.getString("name"),content.getString("photo"),r.getJSONObject(i).getJSONArray("statistics").getJSONObject(0).getJSONObject("games").getString("position") ,sqlDateOfBirth, t);
+            this.playerService.addPlayer(a);   
+        }
+        return "showPlayers";
+    }
+
+    @GetMapping("/createTeams")
+    public String getTeams(Model model) {
+        model.addAttribute("teams", this.teamService.getAllTeams());
+        JSONObject content = response.getBody().getObject();
+        JSONArray r = content.getJSONArray("response");
+       // System.out.println(r);
+        //System.out.println("\n\n");
+        for (int i = 0; i < r.length(); i++) {
+            //System.out.println(r.getJSONObject(i).getJSONObject("team").getString("name") + " " + r.getJSONObject(i).getJSONObject("team").getString("code") +"\n");
+            Team a = new Team(r.getJSONObject(i).getJSONObject("team").getString("name"),r.getJSONObject(i).getJSONObject("team").getString("logo") ,r.getJSONObject(i).getJSONObject("venue").getString("name"));
+            this.teamService.addTeam(a);   
+        }
+        return "showTeams";
+    }
 
     @GetMapping("/")
     public String redirect() {
@@ -40,6 +136,43 @@ public class DataController {
 
 	@PostMapping("/saveData")
 	public String saveData(Model model) {
+        // Host url
+        String host = "https://v3.football.api-sports.io";
+        String charset = "UTF-8";
+        // Headers for a request
+        //String x_rapidapi_host = "movie-database-imdb-alternative.p.rapidapi.com";
+        String x_apisports_key = "3b93b6832c51c181af7574e12124c4f1";//Type here your key
+        // Params
+        String s = "league=94&season=2021";
+        
+        // Request
+        try {
+            // Format query for preventing encoding problems
+            String query = String.format("s=%s",
+            URLEncoder.encode(s, charset));
+        
+            response = Unirest.get(host + "/teams?" + s)
+            .header("x-apisports-key", x_apisports_key)
+            .asJson();//.header("x-rapidapi-host", x_rapidapi_host)
+
+            response2 = Unirest.get(host+ "/players?" + s)
+            .header("x-apisports-key", x_apisports_key).asJson();
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            JsonParser jp = new JsonParser();
+            JsonElement je = jp.parse(response.getBody().toString());
+            String prettyJsonString = gson.toJson(je);
+            System.out.println(prettyJsonString + '\n');
+            je = jp.parse(response2.getBody().toString());
+            prettyJsonString = gson.toJson(je);
+            System.out.println(prettyJsonString + '\n');
+            //System.out.println(response.getStatus());
+            //System.out.println(response.getHeaders().get("Content-Type"));
+            
+        } catch (Exception e) {
+            System.out.println("Data request from API failed");
+        }
+
         Professor[] myprofs = { 
             new Professor("José", "D3.1"), 
             new Professor("Paulo", "135"), 
@@ -65,8 +198,8 @@ public class DataController {
         mystudents[5].addProf(myprofs[1]);
         mystudents[5].addProf(myprofs[2]);
 
-        for (Student s : mystudents)
-            this.studentService.addStudent(s);
+        for (Student student : mystudents)
+            this.studentService.addStudent(student);
     
 		return "redirect:/listStudents";
 	}

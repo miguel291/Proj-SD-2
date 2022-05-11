@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <link rel="stylesheet" href="/team.css"/>
+        <title>List of teams</title>
+        <meta charset="utf8"/>
+        <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;"/>
+    </head>
+    <body>
+      <div class="table-title">
+        <h3>English Premier League</h3>
+        </div>
+        <table class="table-fill">
+          <thead>
+            <tr>
+              <th class="text-left">Team</th>
+              <th class="text-left">Logo</th>
+              <th class="text-left">Stadium</th>
+              </tr>
+              </thead>
+              <tbody class="table-hover">
+          <tr th:each="t : ${teams}">
+            <td class="text-left" th:text="${t.name}">name</td>
+            <td>
+                <img th:src="${t.logo}">
+            </td>
+            <td class="text-left" th:text="${t.stadium}">stadium</td>
+              </ul>
+            </td>
+          </tr>
+        </table>
+      
+    </body>
+</html>
+

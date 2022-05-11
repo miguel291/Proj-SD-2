@@ -6,22 +6,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 
 @Entity
 public class Game implements Serializable{
-    @Id 
-    private String location;
     @Id
+    @SequenceGenerator(
+        name="event_id_seq", 
+        sequenceName="event_id_seq", 
+        allocationSize=1) 
+    @GeneratedValue(
+        strategy = GenerationType.SEQUENCE,
+        generator = "event_id_seq") 
+    private int id;
+    private String location;
+    private String winner = "TBD";
+    @Column(nullable = false)
     private Time gameDate;
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Team> teams;
-    @OneToMany(targetEntity=com.sdProj.data.Event.class, cascade=CascadeType.ALL,
-                mappedBy="game")
-    public List<Event> getEvents() { return events; }
+    @OneToMany(
+        targetEntity=com.sdProj.data.Event.class, 
+        cascade=CascadeType.ALL,
+        mappedBy="game")
     private List<Event> events;
 
     public Game() {
@@ -30,7 +44,7 @@ public class Game implements Serializable{
     public Game(String location, Time gameDate) {
         this.location = location;
         this.gameDate = gameDate;
-        //this.winner = null;
+        this.winner = "TBD";
         this.teams = new ArrayList<>();
         this.events = new ArrayList<>();
     }
@@ -70,6 +84,38 @@ public class Game implements Serializable{
             ", gameDate='" + getGameDate() + "'" +
             ", teams='" + getTeams() + "'" +
             "}";
+    }
+
+    public String getWinner() {
+        return winner;
+    }
+
+    public void setWinner(String winner) {
+        this.winner = winner;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
+    }
+
+    public void addEvent(Event event) {
+        this.events.add(event);
+    }
+
+    public void removeEvent(Event event) {
+        this.events.remove(event);
     }
 
 }

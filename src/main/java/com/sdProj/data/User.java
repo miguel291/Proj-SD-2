@@ -1,5 +1,9 @@
 package com.sdProj.data;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -10,11 +14,14 @@ public class User {
     @Id 
     private String email; 
     private long phone;
+    @Column(nullable = false)
     private String name, password;
-    private boolean admin;
-    //@OneToMany(mappedBy="profs")
-     
-
+    private boolean admin = false;
+    @OneToMany(
+        targetEntity=com.sdProj.data.Event.class, 
+        cascade=CascadeType.ALL,
+        mappedBy="user")
+    private List<Event> events;
 
     public User() {
     }
@@ -94,6 +101,14 @@ public class User {
     public User admin(boolean admin) {
         setAdmin(admin);
         return this;
+    }
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
     }
 
     @Override

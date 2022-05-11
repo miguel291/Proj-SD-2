@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <link rel="stylesheet" href="/team.css"/>
+        <title>List of players</title>
+        <meta charset="utf8"/>
+        <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;"/>
+    </head>
+    <body>
+      <div class="table-title">
+        <h3>Manchester United</h3>
+        </div>
+        <table class="table-fill">
+          <thead>
+            <tr>
+              <th class="text-left">Name</th>
+              <th class="text-left">Photo</th>
+              <th class="text-left">Position</th>
+              <th class="text-left">Birthdate</th>
+              <th class="text-left">Team</th>
+              </tr>
+              </thead>
+              <tbody class="table-hover">
+          <tr th:each="p : ${players}">
+            <td class="text-left" th:text="${p.name}">name</td>
+            <td>
+                <img th:src="${p.photo}">
+            </td> 
+            <td class="text-left" th:text="${p.position}">position</td>
+            <td class="text-left" th:text="${p.birthDate}">birthdate</td>
+            <td class="text-left" th:text="${p.team.getName()}">team</td>
+              </ul>
+            </td>
+          </tr>
+        </table>
+      
+    </body>
+</html>
+
