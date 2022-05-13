@@ -6,14 +6,17 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import java.util.ArrayList;    
-import org.springframework.beans.factory.annotation.Autowired;    
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.sdProj.data.User;
 
 @Service    
-public class UserService   
-{    
+public class UserService implements UserDetailsService {
+   
     @Autowired    
     private UserRepository userRepository;
 
@@ -41,4 +44,14 @@ public class UserService
             p.get().setOffice(newoffice);
     }
 */
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+        if(user == null){
+            throw new UsernameNotFoundException("User Not Found");
+        }
+        //return new CustomUserDetails(user);
+        return null;
+    }
 }    

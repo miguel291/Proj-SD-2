@@ -1,6 +1,5 @@
 package com.sdProj.demo;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +29,7 @@ import java.sql.SQLException;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -63,34 +63,85 @@ public class DataController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/testing")
-    public String test() {
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @GetMapping("/home")
+    public String home() {
+        return "home";
+    }
+
+
+    @GetMapping("/showPlayers")
+    public String getPlayers(Model model) {
+        model.addAttribute("players", this.playerService.getAllPlayers());
+        return "showPlayers";
+    }
+
+    @GetMapping("/showTeams")
+    public String getTeams(Model model) {
+        model.addAttribute("teams", this.teamService.getAllTeams());
+        return "showTeams";
+    }
+
+    @GetMapping("/")
+    public String redirect() {
+        return "redirect:/home";
+    }
+
+    @GetMapping("/createData")
+    public String createData() {
+        return "createData";
+    }
+
+	@PostMapping("/saveData")
+	public String saveData(Model model) {
+        // Host url
+        String host = "https://v3.football.api-sports.io";
+        //Type here your key
+        String x_apisports_key = "3b93b6832c51c181af7574e12124c4f1";
+        // Params for a request
+        String s = "league=39&season=2021";
+        
+        // Request
+        try {
+            //Get teams and players from api
+            response = Unirest.get(host + "/teams?" + s)
+                .header("x-apisports-key", x_apisports_key)
+                .asJson();
+            //Get players from api
+            response2 = Unirest.get(host+ "/players?" + s)
+                .header("x-apisports-key", x_apisports_key)
+                .asJson();
+        } catch (UnirestException e) {
+            System.out.println("Error getting data from API");
+        }
+
+         //Print returned data in console
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonParser jp = new JsonParser();
         JsonElement je = jp.parse(response.getBody().toString());
         String prettyJsonString = gson.toJson(je);
-        //JSONArray jsonArray = new JSONArray(response.getBody());
-        //final Team[] phoneResponses = new Gson().fromJson(response.toString(), Team[].class);
-        /*Iterator<String> keys = jsonArray.keys();
+        System.out.println(prettyJsonString + '\n');
+        je = jp.parse(response2.getBody().toString());
+        prettyJsonString = gson.toJson(je);
+        System.out.println(prettyJsonString + '\n');
+        //System.out.println(response.getStatus());
+        //System.out.println(response.getHeaders().get("Content-Type"));
 
-        while(keys.hasNext()) {
-            String key = keys.next();
-            if (jsonArray.get(key) instanceof JSONArray) {
-                  // do something with jsonArray here      
-            }
-        }*/
-       /* for(Team team : phoneResponses) {
-            System.out.println(team.getName());
-        }*/
-        return "createData";
-    }
-
-
-    @GetMapping("/createPlayers")
-    public String getPlayers(Model model) {
-        model.addAttribute("players", this.playerService.getAllPlayers());
-        JSONObject content = response2.getBody().getObject();
+        //Parse returned data to team objects   
+        JSONObject content = response.getBody().getObject();
         JSONArray r = content.getJSONArray("response");
+        for (int i = 0; i < r.length(); i++) {
+            //System.out.println(r.getJSONObject(i).getJSONObject("team").getString("name") + " " + r.getJSONObject(i).getJSONObject("team").getString("code") +"\n");
+            Team a = new Team(r.getJSONObject(i).getJSONObject("team").getString("name"),r.getJSONObject(i).getJSONObject("team").getString("logo") ,r.getJSONObject(i).getJSONObject("venue").getString("name"));
+            this.teamService.addTeam(a);   
+        }
+        //Parse returned data to player objects
+        content = response2.getBody().getObject();
+        r = content.getJSONArray("response");
         for (int i = 0; i < r.length(); i++) {
             Team t = teamService.getTeamByName(
                 r.getJSONObject(i)
@@ -106,72 +157,7 @@ public class DataController {
             Player a = new Player(content.getString("name"),content.getString("photo"),r.getJSONObject(i).getJSONArray("statistics").getJSONObject(0).getJSONObject("games").getString("position") ,sqlDateOfBirth, t);
             this.playerService.addPlayer(a);   
         }
-        return "showPlayers";
-    }
 
-    @GetMapping("/createTeams")
-    public String getTeams(Model model) {
-        model.addAttribute("teams", this.teamService.getAllTeams());
-        JSONObject content = response.getBody().getObject();
-        JSONArray r = content.getJSONArray("response");
-       // System.out.println(r);
-        //System.out.println("\n\n");
-        for (int i = 0; i < r.length(); i++) {
-            //System.out.println(r.getJSONObject(i).getJSONObject("team").getString("name") + " " + r.getJSONObject(i).getJSONObject("team").getString("code") +"\n");
-            Team a = new Team(r.getJSONObject(i).getJSONObject("team").getString("name"),r.getJSONObject(i).getJSONObject("team").getString("logo") ,r.getJSONObject(i).getJSONObject("venue").getString("name"));
-            this.teamService.addTeam(a);   
-        }
-        return "showTeams";
-    }
-
-    @GetMapping("/")
-    public String redirect() {
-        return "redirect:/listStudents";
-    }
-
-    @GetMapping("/createData")
-    public String createData() {
-        return "createData";
-    }
-
-	@PostMapping("/saveData")
-	public String saveData(Model model) {
-        // Host url
-        String host = "https://v3.football.api-sports.io";
-        String charset = "UTF-8";
-        // Headers for a request
-        //String x_rapidapi_host = "movie-database-imdb-alternative.p.rapidapi.com";
-        String x_apisports_key = "3b93b6832c51c181af7574e12124c4f1";//Type here your key
-        // Params
-        String s = "league=94&season=2021";
-        
-        // Request
-        try {
-            // Format query for preventing encoding problems
-            String query = String.format("s=%s",
-            URLEncoder.encode(s, charset));
-        
-            response = Unirest.get(host + "/teams?" + s)
-            .header("x-apisports-key", x_apisports_key)
-            .asJson();//.header("x-rapidapi-host", x_rapidapi_host)
-
-            response2 = Unirest.get(host+ "/players?" + s)
-            .header("x-apisports-key", x_apisports_key).asJson();
-
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            JsonParser jp = new JsonParser();
-            JsonElement je = jp.parse(response.getBody().toString());
-            String prettyJsonString = gson.toJson(je);
-            System.out.println(prettyJsonString + '\n');
-            je = jp.parse(response2.getBody().toString());
-            prettyJsonString = gson.toJson(je);
-            System.out.println(prettyJsonString + '\n');
-            //System.out.println(response.getStatus());
-            //System.out.println(response.getHeaders().get("Content-Type"));
-            
-        } catch (Exception e) {
-            System.out.println("Data request from API failed");
-        }
 
         Professor[] myprofs = { 
             new Professor("José", "D3.1"), 
@@ -201,7 +187,7 @@ public class DataController {
         for (Student student : mystudents)
             this.studentService.addStudent(student);
     
-		return "redirect:/listStudents";
+		return "redirect:/home";
 	}
 
     @GetMapping("/listStudents")

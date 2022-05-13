@@ -12,11 +12,10 @@ import javax.persistence.OneToMany;
 @Entity
 public class User {
     @Id 
-    private String email; 
+    private String username; 
     private long phone;
     @Column(nullable = false)
-    private String name, password;
-    private boolean admin = false;
+    private String name, password, role;
     @OneToMany(
         targetEntity=com.sdProj.data.Event.class, 
         cascade=CascadeType.ALL,
@@ -26,12 +25,12 @@ public class User {
     public User() {
     }
 
-    public User(int id, long phone, String name, String email, String password, boolean admin) {
+    public User(int id, long phone, String name, String username, String password, String role) {
         this.phone = phone;
         this.name = name;
-        this.email = email;
+        this.username = username;
         this.password = password;
-        this.admin = admin;
+        this.role = role;
     }
 
     public long getPhone() {
@@ -50,12 +49,12 @@ public class User {
         this.name = name;
     }
 
-    public String getEmail() {
-        return this.email;
+    public String getusername() {
+        return this.username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setusername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -66,16 +65,12 @@ public class User {
         this.password = password;
     }
 
-    public boolean isAdmin() {
-        return this.admin;
+    public String getRole() {
+        return this.role;
     }
 
-    public boolean getAdmin() {
-        return this.admin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public User phone(long phone) {
@@ -88,18 +83,13 @@ public class User {
         return this;
     }
 
-    public User email(String email) {
-        setEmail(email);
+    public User username(String username) {
+        setusername(username);
         return this;
     }
 
     public User password(String password) {
         setPassword(password);
-        return this;
-    }
-
-    public User admin(boolean admin) {
-        setAdmin(admin);
         return this;
     }
 
@@ -116,9 +106,9 @@ public class User {
         return "{" +
             ", phone='" + getPhone() + "'" +
             ", name='" + getName() + "'" +
-            ", email='" + getEmail() + "'" +
+            ", username='" + getusername() + "'" +
             ", password='" + getPassword() + "'" +
-            ", admin='" + isAdmin() + "'" +
+            ", admin='" + getRole() + "'" +
             "}";
     }
     
