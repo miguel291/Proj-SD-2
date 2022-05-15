@@ -26,13 +26,30 @@ public class TeamService
 
     public void addTeam(Team Team)  
     {
-        System.out.println(Team);
         teamRepository.save(Team);    
     }
 
     public Team getTeamByName(String name) {
         return teamRepository.findByName(name);
     }
+
+    //function that returns the number of wins for a team
+    public int getWins(String name) {
+        return teamRepository.getWins(name);
+    }
+
+    public void updateTeam(Team Team) {
+        teamRepository.save(Team);
+    }
+
+    public void deleteAllTeams() {
+        teamRepository.deleteAll();
+    }
+
+    public List<Integer> teamResults(Team t){
+       return teamRepository.getTeamResults(t.getName());
+    }
+    
 /*
     @Transactional
     public void changeTeamOffice(int id, String newoffice) {

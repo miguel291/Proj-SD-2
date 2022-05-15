@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <title>Team Results</title>
+    <link rel="stylesheet" href="/team.css"/>
+  </head>
+  <body>
+    <div class="table-title">
+        <h1>Team Victories</h1>
+    <table class="table-fill">
+        <thead>
+          <tr>
+            <th class="text-center">Team</th>
+            <th class="text-center">Games</th>
+            <th class="text-center">Victories</th>
+            <th class="text-center">Draws</th>
+            <th class="text-center">Defeats</th>
+            </tr>
+            </thead>
+            <tbody class="table-hover">
+        <tr th:each=" n : ${names}">
+          <td class="text-center" th:text="${n}">name</td>
+          <td class="text-center" th:text="${results.get(indexOf(n)).get(2)}">games</td>
+          <td class="text-center" th:text="${results.get(indexOf(n)).get(0)}">victories</td>
+          <td class="text-center" th:text="${results.get(indexOf(n)).get(2)-results.get(indexOf(n)).get(0)-results.get(indexOf(n)).get(1)}">draws</td>
+          <td class="text-center" th:text="${results.get(indexOf(n)).get(1)}">defeats</td>
+            </ul>
+          </td>
+        </tr>
+      </table>
+  </body>
+</html>

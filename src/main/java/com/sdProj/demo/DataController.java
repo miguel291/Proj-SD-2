@@ -1,6 +1,10 @@
 package com.sdProj.demo;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.sdProj.data.Event;
@@ -19,12 +23,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.sql.SQLException;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
@@ -41,6 +42,7 @@ public class DataController {
 
     HttpResponse <JsonNode> response;
     HttpResponse <JsonNode> response2;
+    HttpResponse <JsonNode> response3;
 
     @Autowired
     StudentService studentService;
@@ -115,6 +117,11 @@ public class DataController {
             response2 = Unirest.get(host+ "/players?" + s)
                 .header("x-apisports-key", x_apisports_key)
                 .asJson();
+
+            //Get games from api
+            response3 = Unirest.get(host+ "/fixtures?" + s +"&from=2021-08-01&to=2022-05-14")
+                .header("x-apisports-key", x_apisports_key)
+                .asJson();
         } catch (UnirestException e) {
             System.out.println("Error getting data from API");
         }
@@ -122,12 +129,14 @@ public class DataController {
          //Print returned data in console
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonParser jp = new JsonParser();
-        JsonElement je = jp.parse(response.getBody().toString());
+        JsonElement je = jp.parse(response3.getBody().toString());
         String prettyJsonString = gson.toJson(je);
-        System.out.println(prettyJsonString + '\n');
+        //System.out.println(prettyJsonString + '\n');
+        System.out.println("Teams:\n\n\n\n\n\n\n");
         je = jp.parse(response2.getBody().toString());
         prettyJsonString = gson.toJson(je);
-        System.out.println(prettyJsonString + '\n');
+        System.out.println("Players:\n\n\n\n\n\n\n");
+        //System.out.println(prettyJsonString + '\n');
         //System.out.println(response.getStatus());
         //System.out.println(response.getHeaders().get("Content-Type"));
 
@@ -149,16 +158,62 @@ public class DataController {
                 .getJSONObject(0).getJSONObject("team")
                 .getString("name")
             );
+            if(t == null){
+                continue;
+            }
+            //System.out.println("Team: " + t.getName());
             content = r.getJSONObject(i).getJSONObject("player");
-            System.out.println(t.getName()+'\n');
+            //System.out.println(t.getName()+'\n');
             //System.out.println(r.getJSONObject(i).getString("name") + " " + r.getJSONObject(i).getString("position") +"\n");
             //java.sql.Date sqlDateOfBirth = java.sql.Date.valueOf(content.getJSONObject("birth").getString("date"));
             java.sql.Date sqlDateOfBirth = java.sql.Date.valueOf("1995-12-25");
             Player a = new Player(content.getString("name"),content.getString("photo"),r.getJSONObject(i).getJSONArray("statistics").getJSONObject(0).getJSONObject("games").getString("position") ,sqlDateOfBirth, t);
             this.playerService.addPlayer(a);   
+            //System.out.println(a.getName() + " " + a.getPosition() + " " + a.getTeam().getName() + "\n");
         }
 
 
+
+        //Parse returned data to game objects
+        content = response3.getBody().getObject();
+        r = content.getJSONArray("response");
+        for (int i = 0; i < r.length(); i++) {
+            Team t1 = teamService.getTeamByName(
+                r.getJSONObject(i).getJSONObject("teams").getJSONObject("home").getString("name")
+            );
+            Team t2 = teamService.getTeamByName(
+                r.getJSONObject(i).getJSONObject("teams").getJSONObject("away").getString("name")
+            );
+            if(t1 == null || t2 == null){
+                continue;
+            }
+            System.out.println(t1.getName() + " - " + t2.getName());
+
+            String winner;
+            //System.out.println(t1.getName() + " vs " + t2.getName() + "\n");
+            //System.out.println(r.getJSONObject(i).getString("date") + " " + r.getJSONObject(i).getString("status") +"\n");
+            if(r.getJSONObject(i).getJSONObject("goals").getInt("home") < r.getJSONObject(i).getJSONObject("goals").getInt("away"))
+                winner = t2.getName();
+            else if(r.getJSONObject(i).getJSONObject("goals").getInt("home") > r.getJSONObject(i).getJSONObject("goals").getInt("away"))
+                winner = t1.getName();
+            else
+                winner = "Draw";
+             
+            Instant instant = Instant.parse( r.getJSONObject(i).getJSONObject("fixture").getString("date"));
+            java.sql.Timestamp sqlDate = java.sql.Timestamp.from(instant);
+             //java.sql.Timestamp sqlDate = java.sql.Timestamp.valueOf(r.getJSONObject(i).getJSONObject("fixture").getString("date"));
+            Game a = new Game(
+                r.getJSONObject(i).getJSONObject("fixture").getJSONObject("venue").getString("name"),
+                sqlDate,
+                winner,
+                t1,
+                t2,
+                r.getJSONObject(i).getJSONObject("goals").getInt("home"),
+                r.getJSONObject(i).getJSONObject("goals").getInt("away"));
+            this.gameService.addGame(a);   
+        }
+
+/*
         Professor[] myprofs = { 
             new Professor("José", "D3.1"), 
             new Professor("Paulo", "135"), 
@@ -186,7 +241,7 @@ public class DataController {
 
         for (Student student : mystudents)
             this.studentService.addStudent(student);
-    
+    */
 		return "redirect:/home";
 	}
 
@@ -201,6 +256,26 @@ public class DataController {
         m.addAttribute("student", new Student());
         m.addAttribute("allProfessors", this.profService.getAllProfessors());
         return "editStudent";
+    }
+
+    //endpoint to show the victories of a team
+
+    @GetMapping("/listTeamVictories")
+    public String listTeamVictories(Model model) {
+        List<List<Integer>> teamResults = new ArrayList<>(); 
+        ArrayList<String> teamNames = new ArrayList<>();
+        for (Team t : teamService.getAllTeams()){
+            teamNames.add(t.getName());
+            teamResults.add(this.teamService.teamResults(t));
+            System.out.println(this.teamService.teamResults(t));
+        }
+        model.addAttribute("names", teamNames);
+        model.addAttribute("results", teamResults);
+        
+        for(List<Integer> l : teamResults){
+            System.out.println(l);
+        }
+        return "listTeamVictories";
     }
 
     @GetMapping("/editStudent")

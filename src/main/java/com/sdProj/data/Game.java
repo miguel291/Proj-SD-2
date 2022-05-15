@@ -1,7 +1,7 @@
 package com.sdProj.data;
 
 import java.io.Serializable;
-import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,9 +27,10 @@ public class Game implements Serializable{
         generator = "event_id_seq") 
     private int id;
     private String location;
+    private int awayGoals, homeGoals;
     private String winner = "TBD";
     @Column(nullable = false)
-    private Time gameDate;
+    private Timestamp gameDate;
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Team> teams;
     @OneToMany(
@@ -41,12 +42,16 @@ public class Game implements Serializable{
     public Game() {
     }
 
-    public Game(String location, Time gameDate) {
+    public Game(String location, Timestamp gameDate, String winner, Team team1, Team team2, int homeGoals, int awayGoals) {
         this.location = location;
         this.gameDate = gameDate;
-        this.winner = "TBD";
+        this.winner =  winner; 
         this.teams = new ArrayList<>();
+        this.teams.add(team1);
+        this.teams.add(team2);
         this.events = new ArrayList<>();
+        this.awayGoals = awayGoals;
+        this.homeGoals = homeGoals;
     }
 
     public String getLocation() {
@@ -57,11 +62,11 @@ public class Game implements Serializable{
         this.location = location;
     }
 
-    public Time getGameDate() {
+    public Timestamp getGameDate() {
         return this.gameDate;
     }
 
-    public void setGameDate(Time gameDate) {
+    public void setGameDate(Timestamp gameDate) {
         this.gameDate = gameDate;
     }
 
@@ -83,6 +88,9 @@ public class Game implements Serializable{
             " location='" + getLocation() + "'" +
             ", gameDate='" + getGameDate() + "'" +
             ", teams='" + getTeams() + "'" +
+            ", winner='" + getWinner() + "'" +
+            ", homeGoals='" + getHomeGoals() + "'" +
+            ", awayGoals='" + getAwayGoals() + "'" +
             "}";
     }
 
@@ -116,6 +124,22 @@ public class Game implements Serializable{
 
     public void removeEvent(Event event) {
         this.events.remove(event);
+    }
+
+    public int getAwayGoals() {
+        return awayGoals;
+    }
+
+    public void setAwayGoals(int awayGoals) {
+        this.awayGoals = awayGoals;
+    }
+
+    public int getHomeGoals() {
+        return homeGoals;
+    }
+
+    public void setHomeGoals(int homeGoals) {
+        this.homeGoals = homeGoals;
     }
 
 }

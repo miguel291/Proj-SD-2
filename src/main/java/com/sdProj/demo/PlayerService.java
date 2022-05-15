@@ -26,7 +26,6 @@ public class PlayerService
 
     public void addPlayer(Player player)  
     {
-        System.out.println(player);
         playerRepository.save(player);    
     }
 /*
