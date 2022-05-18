@@ -1,5 +1,6 @@
 package com.sdProj.demo;
 
+import java.lang.reflect.Field;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,10 +133,8 @@ public class DataController {
         JsonElement je = jp.parse(response3.getBody().toString());
         String prettyJsonString = gson.toJson(je);
         //System.out.println(prettyJsonString + '\n');
-        System.out.println("Teams:\n\n\n\n\n\n\n");
         je = jp.parse(response2.getBody().toString());
         prettyJsonString = gson.toJson(je);
-        System.out.println("Players:\n\n\n\n\n\n\n");
         //System.out.println(prettyJsonString + '\n');
         //System.out.println(response.getStatus());
         //System.out.println(response.getHeaders().get("Content-Type"));
@@ -148,6 +147,7 @@ public class DataController {
             Team a = new Team(r.getJSONObject(i).getJSONObject("team").getString("name"),r.getJSONObject(i).getJSONObject("team").getString("logo") ,r.getJSONObject(i).getJSONObject("venue").getString("name"));
             this.teamService.addTeam(a);   
         }
+
         //Parse returned data to player objects
         content = response2.getBody().getObject();
         r = content.getJSONArray("response");
@@ -173,7 +173,6 @@ public class DataController {
         }
 
 
-
         //Parse returned data to game objects
         content = response3.getBody().getObject();
         r = content.getJSONArray("response");
@@ -187,7 +186,7 @@ public class DataController {
             if(t1 == null || t2 == null){
                 continue;
             }
-            System.out.println(t1.getName() + " - " + t2.getName());
+            //System.out.println(t1.getName() + " - " + t2.getName());
 
             String winner;
             //System.out.println(t1.getName() + " vs " + t2.getName() + "\n");
@@ -212,36 +211,6 @@ public class DataController {
                 r.getJSONObject(i).getJSONObject("goals").getInt("away"));
             this.gameService.addGame(a);   
         }
-
-/*
-        Professor[] myprofs = { 
-            new Professor("José", "D3.1"), 
-            new Professor("Paulo", "135"), 
-            new Professor("Estrela", "180")
-        };
-        Student[] mystudents = { 
-            new Student("Paula", "91999991", 21),
-            new Student("Artur", "91999992", 21),
-            new Student("Rui", "91999993", 19),
-            new Student("Luísa", "91999994", 20),
-            new Student("Alexandra", "91999995", 21),
-            new Student("Carlos", "91999995", 22)
-        };
-
-        mystudents[0].addProf(myprofs[0]);
-        mystudents[0].addProf(myprofs[1]);
-        mystudents[1].addProf(myprofs[1]);
-        mystudents[1].addProf(myprofs[2]);
-        mystudents[2].addProf(myprofs[0]);
-        mystudents[3].addProf(myprofs[2]);
-        mystudents[4].addProf(myprofs[1]);
-        mystudents[5].addProf(myprofs[0]);
-        mystudents[5].addProf(myprofs[1]);
-        mystudents[5].addProf(myprofs[2]);
-
-        for (Student student : mystudents)
-            this.studentService.addStudent(student);
-    */
 		return "redirect:/home";
 	}
 
@@ -258,16 +227,15 @@ public class DataController {
         return "editStudent";
     }
 
-    //endpoint to show the victories of a team
-
-    @GetMapping("/listTeamVictories")
+    //Endpoint to show the victories of a team
+    @GetMapping("/listTeamStats")
     public String listTeamVictories(Model model) {
         List<List<Integer>> teamResults = new ArrayList<>(); 
         ArrayList<String> teamNames = new ArrayList<>();
         for (Team t : teamService.getAllTeams()){
             teamNames.add(t.getName());
             teamResults.add(this.teamService.teamResults(t));
-            System.out.println(this.teamService.teamResults(t));
+            //System.out.println(this.teamService.teamResults(t));
         }
         model.addAttribute("names", teamNames);
         model.addAttribute("results", teamResults);
@@ -275,7 +243,7 @@ public class DataController {
         for(List<Integer> l : teamResults){
             System.out.println(l);
         }
-        return "listTeamVictories";
+        return "listTeamStats";
     }
 
     @GetMapping("/editStudent")
@@ -290,6 +258,27 @@ public class DataController {
             return "redirect:/listStudents";
         }
     }    
+
+    @GetMapping("/teamDuel/{id1}/{id2}")
+    public String teamDuel(@PathVariable("id1") String id, @PathVariable("id2") String id2, Model m) {
+        Team t1 = this.teamService.getTeamByName(id);
+        Team t2 = this.teamService.getTeamByName(id2);
+        if (t1 != null && t2 != null) {
+            List<Object> o = this.gameService.getGoalsAndLocation(t1, t2);
+            m.addAttribute("object", o);
+            return "compareTeams";
+        }
+        else {
+            return "redirect:/showTeams";
+        }
+    }
+
+    @GetMapping("/listPlayerGoalStats")
+    public String listPlayerGoalStats(Model model) {
+        model.addAttribute("stats", this.eventService.getGoalsStatsPerPlayer());
+        model.addAttribute("maxGoals", this.eventService.getMaxGoalsInGame());
+        return "listPlayerGoalStats";
+    }
 
     @PostMapping("/saveStudent")
     public String saveStudent(@ModelAttribute Student st) {

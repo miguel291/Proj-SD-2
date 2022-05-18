@@ -1,12 +1,14 @@
 <html>
   <head>
-    <title>Team Results</title>
+    <title>Team Match Stats</title>
+    <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
     <link rel="stylesheet" href="/team.css"/>
   </head>
   <body>
     <div class="table-title">
-        <h1>Team Victories</h1>
+        <h1>Team Match Stats</h1>
     <table class="table-fill">
+      <table class=”sortable”>
         <thead>
           <tr>
             <th class="text-center">Team</th>
@@ -19,10 +21,10 @@
             <tbody class="table-hover">
         <tr th:each=" n : ${names}">
           <td class="text-center" th:text="${n}">name</td>
-          <td class="text-center" th:text="${results.get(indexOf(n)).get(2)}">games</td>
-          <td class="text-center" th:text="${results.get(indexOf(n)).get(0)}">victories</td>
-          <td class="text-center" th:text="${results.get(indexOf(n)).get(2)-results.get(indexOf(n)).get(0)-results.get(indexOf(n)).get(1)}">draws</td>
-          <td class="text-center" th:text="${results.get(indexOf(n)).get(1)}">defeats</td>
+          <td class="text-center" th:text="${results.get(nStat.index).get(2)}">games</td>
+          <td class="text-center" th:text="${results.get(nStat.index).get(0)}">victories</td>
+          <td class="text-center" th:text="${results.get(nStat.index).get(2)-results.get(nStat.index).get(0)-results.get(nStat.index).get(1)}">draws</td>
+          <td class="text-center" th:text="${results.get(nStat.index).get(1)}">defeats</td>
             </ul>
           </td>
         </tr>

@@ -6,7 +6,8 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import java.util.ArrayList;    
-import org.springframework.beans.factory.annotation.Autowired;    
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import com.sdProj.data.Team;
@@ -49,7 +50,7 @@ public class TeamService
     public List<Integer> teamResults(Team t){
        return teamRepository.getTeamResults(t.getName());
     }
-    
+
 /*
     @Transactional
     public void changeTeamOffice(int id, String newoffice) {

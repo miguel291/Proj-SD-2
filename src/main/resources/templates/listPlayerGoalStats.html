@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <link rel="stylesheet" href="/team.css"/>
+        <title>List of teams</title>
+        <meta charset="utf8"/>
+        <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;"/>
+    </head>
+    <body>
+      <div class="table-title">
+        <h3>Player Goal Stats</h3>
+        </div>
+        <table class="table-fill">
+          <thead>
+            <tr>
+              <th class="text-left">Player</th>
+              <th class="text-left">Goals</th>
+              <th class="text-left">Average Goals Per Game</th>
+              <th class="text-left">Max Goals In Game</th>
+            </tr>
+              </thead>
+              <tbody class="table-hover">
+          <tr th:each="s : ${stats}">
+            <td class="text-left" th:text="${s[0]}">name</td>
+            <td class="text-left" th:text="${s[1]}">goals</td>
+            <td class="text-left" th:text="${s[2]}">avg</td>
+            <td class="text-left" th:text="${maxGoals[sStat.index][1]}">max</td>
+              </ul>
+            </td>
+          </tr>
+        </table>
+      
+    </body>
+</html>
+

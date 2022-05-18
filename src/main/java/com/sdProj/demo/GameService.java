@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sdProj.data.Game;
+import com.sdProj.data.Team;
 
 @Service    
 public class GameService   
@@ -26,12 +27,24 @@ public class GameService
 
     public void addGame(Game Game)  
     {
-        System.out.println(Game);
+        //System.out.println(Game);
         gameRepository.save(Game);    
     }
 
     public Optional<Game> getGame(int id) {
         return gameRepository.findById(id);
+    }
+
+    public List<Integer> getGamesIds(Team t1, Team t2) {
+        return gameRepository.getGamesIds(t1.getName(), t2.getName());
+    }
+
+    public List<Object> getGoalsAndLocation(Team t1, Team t2) {
+        return gameRepository.getGoalsAndLocation(t1.getName(), t2.getName());
+    }
+
+    public List<Integer> getIdPlayersReceivedCard(Team t1, Team t2, String cardColor) {
+        return gameRepository.getTeamCards(t1.getName(), t2.getName(), cardColor);
     }
 /*
     @Transactional

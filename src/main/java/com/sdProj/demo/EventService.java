@@ -33,6 +33,14 @@ public class EventService
     public Optional<Event> getEvent(int id) {
         return eventRepository.findById(id);
     }
+
+    public List<Object[]> getMaxGoalsInGame() {
+        return eventRepository.maxGoalsInGame();
+    }
+
+    public List<Object[]> getGoalsStatsPerPlayer() {
+        return eventRepository.goalsStatsPerPlayer();
+    }
 /*
     @Transactional
     public void changeProfOffice(int id, String newoffice) {

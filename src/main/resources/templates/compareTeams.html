@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+    <title>Team comparison</title>
+<h1>Team comparison</h1>
+
+<div class="form-group blu-margin">
+  <select class="form-control" th:field="${operator.opeId}"  id="dropOperator">
+  <option value="0">select operator</option>
+  <option th:each="operator : ${operators}" th:value="${operator.id}" th:text="${operator.operatorName}"></option>
+  </select>
+</div>
+
+<div class="form-group row">
+  <select class="form-control" id="status" name="status">
+      <option th:each="stat : ${statuses}"
+              th:value="${stat}"
+              th:text="${stat}"
+              th:selected="${stat.equals(group.status)}"/>
+  </select>
+</div>
+
+<form action="/action_page.php">
+  <label for="teams">Choose a team:</label>
+  <select name="teams" id="teams">
+    <option value="volvo">Volvo</option>
+    <option value="saab">Saab</option>
+    <option value="opel">Opel</option>
+    <option value="audi">Audi</option>
+  </select>
+  <br><br>
+  <input type="submit" value="Submit">
+</form>
+
+</body>
+</html>
