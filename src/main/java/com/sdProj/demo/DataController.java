@@ -345,3 +345,25 @@ public class DataController {
     }
 
 }
+
+/*
+select home_goals,away_goals,location, game_date from game WHERE   game_date >= NOW() - '2 hour'::INTERVAL
+select * from event where game_id = 600
+select teams_name from game_teams where games_id = 600
+
+select  games_id ,teams_name from game_teams where games_id in (select id from game where winner != null) group by games_id,teams_name
+select * from game_teams
+select * from users
+/*sempre que um evento 'goal' é validado, deve-se incrementar os golos na tabela jogo
+
+select * from event where game_id = 1 and valid = true order by time
+select count(*) from event where game_id = 1 and type like 'Goal'
+insert into users values('m','miguel','1232',223232,'ADMIN');
+insert into event values(1,'Yellow',current_time,'Card',true,1,'Marc Navarro','m');
+insert into event values(2,'Yellow',current_time,'Card',false,1,'Marc Navarro','m');
+insert into event values(3,'Red',current_time,'Card',true,1,'Marc Navarro','m');
+insert into event values(4,'',current_time,'Goal',true,1,'Marc Navarro','m');
+insert into event values(5,'',current_time,'End',true,1,'','m');
+
+insert into game values (601,2,localtimestamp(0),0,'Stanford Bridge','TBD')
+*/

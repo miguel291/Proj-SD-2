@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
+import org.hibernate.annotations.ManyToAny;
+
 @Entity
 public class Event {
     @Id 
@@ -34,7 +36,7 @@ public class Event {
     @JoinColumn(name = "game_id", nullable=false)
     private Game game;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "player_id", nullable=false)
+    @JoinColumn(name = "player_id", nullable=true)
     private Player player;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable=false)
