@@ -35,9 +35,12 @@ public class Event {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id", nullable=false)
     private Game game;
-    @ManyToOne(fetch = FetchType.LAZY)
+
+
+    @ManyToOne(optional= true,fetch = FetchType.LAZY)
     @JoinColumn(name = "player_id", nullable=true)
     private Player player;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable=false)
     private User user;
