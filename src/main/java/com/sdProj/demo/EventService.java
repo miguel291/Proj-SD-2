@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sdProj.data.Event;
+import com.sdProj.data.Team;
 
 @Service    
 public class EventService   
@@ -40,6 +41,15 @@ public class EventService
 
     public List<Object[]> getGoalsStatsPerPlayer() {
         return eventRepository.goalsStatsPerPlayer();
+    }
+
+    public List<Integer> getCountCards(Team t1, Team t2, String cardColor) {
+        System.out.println(eventRepository.getTeamCards(t1.getName(), t2.getName(), cardColor));
+        return eventRepository.getTeamCards(t1.getName(), t2.getName(), cardColor);
+    }
+
+    public List<List<Object>> getEventsByGameId(int id){
+        return eventRepository.getEventsByGameId(id);
     }
 /*
     @Transactional

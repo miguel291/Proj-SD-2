@@ -43,9 +43,8 @@ public class GameService
         return gameRepository.getGoalsAndLocation(t1.getName(), t2.getName());
     }
 
-    public List<Integer> getCountCards(Team t1, Team t2, String cardColor) {
-        System.out.println(gameRepository.getTeamCards(t1.getName(), t2.getName(), cardColor));
-        return gameRepository.getTeamCards(t1.getName(), t2.getName(), cardColor);
+    public List<List<Object>> getCurrentGames() {
+        return gameRepository.getCurrentGames();
     }
 /*
     @Transactional

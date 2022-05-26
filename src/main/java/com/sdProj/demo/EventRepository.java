@@ -16,6 +16,14 @@ public interface EventRepository extends CrudRepository<Event, Integer>
     //Returns player_id, total goals and average goals per game
     @Query(value = "select player_id, count(*),round (cast (CAST (count(*) AS FLOAT) / (select CAST (count(*) AS float) from game_teams where teams_name like min(player.team_name)) as numeric),2)from event inner join player on player.name = event.player_id where type like 'Goal' group by player_id ", nativeQuery = true)
     public List<Object[]> goalsStatsPerPlayer();
+
+    //Get id of players who received cards in games betweem two teams
+    @Query(value = "select count(*) from event join player on event.player_id = player.name where game_id in  (select games_id from game_teams where teams_name like %?1 and games_id in (select games_id from game_teams where teams_name like %?2)) and color like %?3 and valid is true group by player.team_name", nativeQuery = true)
+    public List<Integer> getTeamCards(String teamName1, String teamName2, String cardColor);
+
+    //Get events of game with id    
+    @Query(value = "select * from event where game_id = ?1 and valid is true", nativeQuery = true)
+    public List<List<Object>> getEventsByGameId(int gameId);
 } 
 
 //select player_id, count(*),CAST (count(*) AS FLOAT) / (select CAST (count(*) AS float) from game_teams where teams_name like min(player.team_name)) from event inner join player on player.name = event.player_id where type like 'Goal' group by player_id

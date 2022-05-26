@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <link rel="stylesheet" href="/team.css"/>
+        <title>Live games</title>
+        <meta charset="utf8"/>
+        <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;"/>
+    </head>
+    <body>
+      <div class="table-title">
+        <h3>Live games</h3>
+        </div>
+        <table class="table-fill">
+          <thead>
+            <tr>
+              <th class="text-center">Team 1</th>
+              <th class="text-left">Team 2</th>
+              <th class="text-left">Result</th>
+              <th class="text-left">Date</th>
+              <th class="text-left">Location</th>
+              <th class="text-left">Events</th>
+            </tr>
+              </thead>
+              <tbody class="table-hover">
+          <tr th:each="g : ${games}">
+            <td class="text-left" th:text="${g.get(0)}">team1</td>
+            <td class="text-left" th:text="${g.get(1)}">team2</td>
+            <td class="text-left" th:text="${g.get(2)}">result</td>
+            <td class="text-left" th:text="${g.get(3)}">date</td>
+            <td class="text-left" th:text="${g.get(4)}">location</td>
+            <td class="text-left" th:text="${events}">event</td>
+            <div  th:each="e, stat : ${events[gStat.index]}">
+                <td class="text-left" th:text="${e}">date</td>
+            </div>
+              </ul>
+            </td>
+          </tr>
+        </table>
+      
+    </body>
+</html>

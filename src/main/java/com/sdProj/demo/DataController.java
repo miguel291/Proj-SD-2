@@ -253,7 +253,7 @@ public class DataController {
             //System.out.println(this.teamService.teamResults[](t));
         }
         model.addAttribute("names", teamNames);
-        model.addAttribute("results[]", teamResults);
+        model.addAttribute("results", teamResults);
         
         for(List<Integer> l : teamResults){
             System.out.println(l);
@@ -320,11 +320,11 @@ public class DataController {
                     }
                 }
             }
-            List<Integer> yellowCards = this.gameService.getCountCards(t, s,"Yellow");
+            List<Integer> yellowCards = this.eventService.getCountCards(t, s,"Yellow");
             for(int i = 0; i < yellowCards.size(); i++){
                 System.out.println(yellowCards.get(i));
             }
-            List<Integer> redCards = this.gameService.getCountCards(t, s,"Red");
+            List<Integer> redCards = this.eventService.getCountCards(t, s,"Red");
             for(int i = 0; i < redCards.size(); i++){
                 System.out.println(redCards.get(i));
             }
@@ -363,6 +363,40 @@ public class DataController {
         model.addAttribute("stats", this.eventService.getGoalsStatsPerPlayer());
         model.addAttribute("maxGoals", this.eventService.getMaxGoalsInGame());
         return "listPlayerGoalStats";
+    }
+
+    @GetMapping("/currentGames")
+    public String currentGames(Model model) {
+        List<List<Object>> currentGamessData = this.gameService.getCurrentGames();
+        List<List<Object>> cleanedGamesData = new ArrayList();
+        List<List<Object>> currentGamesEvents = new ArrayList();
+        List<List<List<Object>>> clenedGamesEvents = new ArrayList();
+        //this.eventService.getEventsByGameId(id);
+        for(int i = 0; i < currentGamessData.size(); i++){
+            System.out.println(currentGamessData.get(i));
+        }
+        for(int i = 0; i < currentGamessData.size(); i++){
+            List<Object> temp = new ArrayList<>();
+            currentGamesEvents.addAll(this.eventService.getEventsByGameId((int) currentGamessData.get(i).get(2)));
+            if(currentGamessData.get(i).get(0).equals(currentGamessData.get(i).get(6))){
+                temp.add(currentGamessData.get(i).get(1));
+                temp.add(currentGamessData.get(i+1).get(1));
+            }
+            else{
+                temp.add(currentGamessData.get(i+1).get(1));
+                temp.add(currentGamessData.get(i).get(1));
+            }
+            temp.add(new String(currentGamessData.get(i).get(3) + " - " + currentGamessData.get(i).get(4)));
+            temp.add(currentGamessData.get(i).get(5));
+            temp.add(currentGamessData.get(i).get(6));
+            cleanedGamesData.add(temp);
+            i++;
+            System.out.println(temp.get(0) + " " + temp.get(1) + " " + temp.get(2) + " " + temp.get(3) + " " + temp.get(4)); 
+        }
+        model.addAttribute("games", cleanedGamesData);
+        model.addAttribute("events", currentGamesEvents);
+        System.out.println(currentGamesEvents);
+        return "currentGames";
     }
 
     @PostMapping("/saveStudent")

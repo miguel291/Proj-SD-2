@@ -17,9 +17,10 @@ public interface GameRepository extends CrudRepository<Game, Integer>
     @Query(value = "select home_goals,away_goals,location from game where id in (select games_id from game_teams where teams_name like %?1 and games_id in (select games_id from game_teams where teams_name like %?2))", nativeQuery = true)
     public List<List<Object>> getGoalsAndLocation(String teamName1, String teamName2);
 
-    //Get id of players who received cards in games betweem two teams
-    @Query(value = "select count(*) from event join player on event.player_id = player.name where game_id in  (select games_id from game_teams where teams_name like %?1 and games_id in (select games_id from game_teams where teams_name like %?2)) and color like %?3 and valid is true group by player.team_name", nativeQuery = true)
-    public List<Integer> getTeamCards(String teamName1, String teamName2, String cardColor);
+    //Get data from games happening now
+    @Query(value = "select stadium,name,id,home_goals,away_goals,date_trunc('second', game_date),location from game join game_teams on game.id = game_teams.games_id join team on teams_name = name where game_date BETWEEN NOW() - INTERVAL '2 HOURS' AND NOW() order by id", nativeQuery = true)
+    public List<List<Object>> getCurrentGames();
+
 } 
 //select count(*) from event join player on event.player_id = player.name where game_id in  (select games_id from game_teams where teams_name like %?1 and games_id in (select games_id from game_teams where teams_name like %?2)) and color like %?3 and valid is true group by player.team_name
 // select player_id from event where game_id in  (select games_id from game_teams where teams_name like %?1 and games_id in (select games_id from game_teams where teams_name like %?2)) and color like %?3
