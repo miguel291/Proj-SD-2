@@ -304,7 +304,7 @@ public class DataController {
                     }
                 }
                 else{
-                    results[1][2] += (int) o.get(1);
+                    results[0][3] += (int) o.get(1);
                     results[1][3] += (int) o.get(0);
                     if((int) o.get(1) > (int) o.get(0)){
                         results[0][0]++;
@@ -370,14 +370,16 @@ public class DataController {
         List<List<Object>> currentGamessData = this.gameService.getCurrentGames();
         List<List<Object>> cleanedGamesData = new ArrayList();
         List<List<Object>> currentGamesEvents = new ArrayList();
-        List<List<List<Object>>> clenedGamesEvents = new ArrayList();
+        List<List<List<Object>>> cleanedGamesEvents = new ArrayList();
         //this.eventService.getEventsByGameId(id);
         for(int i = 0; i < currentGamessData.size(); i++){
             System.out.println(currentGamessData.get(i));
         }
         for(int i = 0; i < currentGamessData.size(); i++){
             List<Object> temp = new ArrayList<>();
-            currentGamesEvents.addAll(this.eventService.getEventsByGameId((int) currentGamessData.get(i).get(2)));
+            currentGamesEvents = this.eventService.getEventsByGameId((int) currentGamessData.get(i).get(2));
+            cleanedGamesEvents.add(currentGamesEvents);
+            currentGamesEvents.clear();
             if(currentGamessData.get(i).get(0).equals(currentGamessData.get(i).get(6))){
                 temp.add(currentGamessData.get(i).get(1));
                 temp.add(currentGamessData.get(i+1).get(1));
