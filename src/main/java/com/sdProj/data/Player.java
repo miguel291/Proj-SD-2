@@ -19,7 +19,7 @@ public class Player {
     private String name;
     @Column(nullable = false)
     private String position, photo;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Date birthDate;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="team_name", nullable=false)

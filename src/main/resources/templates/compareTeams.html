@@ -1,37 +1,47 @@
 <!DOCTYPE html>
 <html>
-<body>
-
-    <title>Team comparison</title>
-<h1>Team comparison</h1>
-
-<div class="form-group blu-margin">
-  <select class="form-control" th:field="${operator.opeId}"  id="dropOperator">
-  <option value="0">select operator</option>
-  <option th:each="operator : ${operators}" th:value="${operator.id}" th:text="${operator.operatorName}"></option>
-  </select>
-</div>
-
-<div class="form-group row">
-  <select class="form-control" id="status" name="status">
-      <option th:each="stat : ${statuses}"
-              th:value="${stat}"
-              th:text="${stat}"
-              th:selected="${stat.equals(group.status)}"/>
-  </select>
-</div>
-
-<form action="/action_page.php">
-  <label for="teams">Choose a team:</label>
-  <select name="teams" id="teams">
-    <option value="volvo">Volvo</option>
-    <option value="saab">Saab</option>
-    <option value="opel">Opel</option>
-    <option value="audi">Audi</option>
-  </select>
-  <br><br>
-  <input type="submit" value="Submit">
-</form>
-
-</body>
+    <head>
+      <link rel="stylesheet" href="/team.css"/>
+        <title>List of teams</title>
+        <meta charset="utf8"/>
+        <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;"/>
+    </head>
+    <body>
+      <div class="table-title">
+        <h3>Team Comparison</h3>
+        </div>
+        <table class="table-fill">
+          <thead>
+            <tr>
+              <th class="text-center">Logo</th>
+              <th class="text-left">Team</th>
+              <th class="text-left">Victories</th>
+              <th class="text-left">Draws</th>
+              <th class="text-left">Defeats</th>
+              <th class="text-left">Goals scored</th>
+              <th class="text-left">Yellow Cards</th>
+              <th class="text-left">Red Cards</th>
+            </tr>
+              </thead>
+              <tbody class="table-hover">
+          <tr th:each="t : ${teamNames}">
+            <td>
+              <img th:src="${logo[tStat.index]}">
+          </td>
+            <td class="text-left" th:text="${t}">name</td>
+            <td class="text-left" th:text="${results[tStat.index][0]}">victories</td>
+            <td class="text-left" th:text="${results[tStat.index][2]}">draws</td>
+            <td class="text-left" th:text="${results[tStat.index][1]}">defeats</td>
+            <td class="text-left" th:text="${results[tStat.index][3]}">goals</td>
+            <td class="text-left" th:text="${yellowCards[tStat.index]}">yellow</td>  
+            <td class="text-left" th:text="${redCards[tStat.index]}">red</td>
+              </ul>
+            </td>
+          </tr>
+        </table>
+      
+    </body>
 </html>
+
+
+

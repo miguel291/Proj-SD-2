@@ -39,11 +39,12 @@ public class GameService
         return gameRepository.getGamesIds(t1.getName(), t2.getName());
     }
 
-    public List<Object> getGoalsAndLocation(Team t1, Team t2) {
+    public List<List<Object>> getGoalsAndLocation(Team t1, Team t2) {
         return gameRepository.getGoalsAndLocation(t1.getName(), t2.getName());
     }
 
-    public List<Integer> getIdPlayersReceivedCard(Team t1, Team t2, String cardColor) {
+    public List<Integer> getCountCards(Team t1, Team t2, String cardColor) {
+        System.out.println(gameRepository.getTeamCards(t1.getName(), t2.getName(), cardColor));
         return gameRepository.getTeamCards(t1.getName(), t2.getName(), cardColor);
     }
 /*

@@ -17,6 +17,7 @@ import com.sdProj.data.Game;
 import com.sdProj.data.Student;
 import com.sdProj.formdata.FormData;
 
+import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,9 +166,23 @@ public class DataController {
             content = r.getJSONObject(i).getJSONObject("player");
             //System.out.println(t.getName()+'\n');
             //System.out.println(r.getJSONObject(i).getString("name") + " " + r.getJSONObject(i).getString("position") +"\n");
-            //java.sql.Date sqlDateOfBirth = java.sql.Date.valueOf(content.getJSONObject("birth").getString("date"));
-            java.sql.Date sqlDateOfBirth = java.sql.Date.valueOf("1995-12-25");
-            Player a = new Player(content.getString("name"),content.getString("photo"),r.getJSONObject(i).getJSONArray("statistics").getJSONObject(0).getJSONObject("games").getString("position") ,sqlDateOfBirth, t);
+            java.sql.Date sqlDateOfBirth;
+            try {
+                sqlDateOfBirth = java.sql.Date.valueOf(content.getJSONObject("birth").getString("date"));
+            } catch (Exception e) {
+                //TODO: handle exception
+                System.out.println("Player  " + content.getString("name") + " with no date of birth");
+                //sqlDateOfBirth = java.sql.Date.valueOf("1970-01-01");
+                sqlDateOfBirth = null;
+            }
+            //System.out.println(sqlDateOfBirth);
+            Player a = new Player(
+                content.getString("name"),
+                content.getString("photo"),
+                r.getJSONObject(i).getJSONArray("statistics").getJSONObject(0).getJSONObject("games").getString("position"),
+                sqlDateOfBirth, 
+                t
+            );
             this.playerService.addPlayer(a);   
             //System.out.println(a.getName() + " " + a.getPosition() + " " + a.getTeam().getName() + "\n");
         }
@@ -235,10 +250,10 @@ public class DataController {
         for (Team t : teamService.getAllTeams()){
             teamNames.add(t.getName());
             teamResults.add(this.teamService.teamResults(t));
-            //System.out.println(this.teamService.teamResults(t));
+            //System.out.println(this.teamService.teamResults[](t));
         }
         model.addAttribute("names", teamNames);
-        model.addAttribute("results", teamResults);
+        model.addAttribute("results[]", teamResults);
         
         for(List<Integer> l : teamResults){
             System.out.println(l);
@@ -261,11 +276,81 @@ public class DataController {
 
     @GetMapping("/teamDuel/{id1}/{id2}")
     public String teamDuel(@PathVariable("id1") String id, @PathVariable("id2") String id2, Model m) {
-        Team t1 = this.teamService.getTeamByName(id);
-        Team t2 = this.teamService.getTeamByName(id2);
-        if (t1 != null && t2 != null) {
-            List<Object> o = this.gameService.getGoalsAndLocation(t1, t2);
-            m.addAttribute("object", o);
+        Team t = this.teamService.getTeamByName(id);
+        Team s = this.teamService.getTeamByName(id2);
+        if (t != null && s != null) {
+            System.out.println(t.getName() + " vs " + s.getName());
+            System.out.println(this.gameService.getGamesIds(t, s));
+            System.out.println(this.gameService.getGoalsAndLocation(t, s));
+            int t_win, t_lose, t_draw, s_win, s_lose, s_draw,t_goals,s_goals;
+            int[][] results = new int[2][4];
+            t_win = t_lose = t_draw = s_win = s_lose = s_draw = t_goals = s_goals = 0;
+            //home_goals, away_goals, location
+            for(List<Object> o : this.gameService.getGoalsAndLocation(t, s)){
+                if(o.get(2).equals(t.getStadium())){
+                    results[0][3] += (int) o.get(0);
+                    results[1][3] += (int) o.get(1);
+                    if( (int) o.get(0) > (int) o.get(1)){
+                        results[0][0]++;    
+                        results[1][1]++;
+                    }
+                    else if( (int) o.get(0) <(int) o.get(1)){
+                        results[0][1]++;
+                        results[1][0]++;
+                    }
+                    else{
+                        results[0][2]++;
+                        results[1][2]++;
+                    }
+                }
+                else{
+                    results[1][2] += (int) o.get(1);
+                    results[1][3] += (int) o.get(0);
+                    if((int) o.get(1) > (int) o.get(0)){
+                        results[0][0]++;
+                        results[1][1]++;
+                    }
+                    else if((int) o.get(1) < (int) o.get(0)){
+                        results[0][1]++;
+                        results[1][0]++;
+                    }
+                    else{
+                        results[0][2]++;
+                        results[1][2]++;
+                    }
+                }
+            }
+            List<Integer> yellowCards = this.gameService.getCountCards(t, s,"Yellow");
+            for(int i = 0; i < yellowCards.size(); i++){
+                System.out.println(yellowCards.get(i));
+            }
+            List<Integer> redCards = this.gameService.getCountCards(t, s,"Red");
+            for(int i = 0; i < redCards.size(); i++){
+                System.out.println(redCards.get(i));
+            }
+            System.out.println("Red: " + redCards.size() +  " \nYellow: " + yellowCards.size());
+            if(redCards.size() != 2){
+                redCards.add(0);
+                redCards.add(0);
+            }
+            System.out.println("Red: " + redCards.size() +  " \nYellow: " + yellowCards.size());
+            if(yellowCards.size() != 2){
+                yellowCards.add(0);
+                yellowCards.add(0);
+            }
+            System.out.println("Red: " + redCards.size() +  " \nYellow: " + yellowCards.size());
+            List<String> teamNames = new ArrayList<>();
+            teamNames.add(t.getName());
+            teamNames.add(s.getName());
+            System.out.println("Results[]:" + results[0][0] + " " + results[0][1] + " " + results[0][2] + " " + results[0][3] + " " + results[1][0] + " " + results[1][1] + " " + results[1][2] + " " + results[1][3]);
+            //System.out.println("Results[]:" + t_win + " " + t_lose + " " + t_draw + " " + s_win + " " + s_lose + " " + s_draw + " " + t_goals + " " + s_goals);
+            m.addAttribute("yellowCards", yellowCards);
+            String[] logo = {t.getLogo(), s.getLogo()};
+            m.addAttribute("logo", logo);
+            m.addAttribute("redCards", redCards);
+            m.addAttribute("teamNames", teamNames);
+            m.addAttribute("results", results);
+            //System.out.println(yellowCards.get(0) + " " + yellowCards.get(1) + " " + redCards.get(0) + " " + redCards.get(1));
             return "compareTeams";
         }
         else {
@@ -293,7 +378,7 @@ public class DataController {
     }
 
     /* Note the invocation of a service method that is served by a query in jpql */
-    @GetMapping("/queryResults")
+    @GetMapping("/queryResults[]")
     public String queryResult1(@ModelAttribute FormData data, Model m) {
         List<Student> ls = this.studentService.findByNameEndsWith(data.getName());
         m.addAttribute("students", ls);
