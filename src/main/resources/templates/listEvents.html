@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>List of Events</title>
+        <link rel="stylesheet" href="/team.css"/>
+        <meta charset="utf8"/>
+    </head>
+    <body>
+        <h1>List of Events</h1>
+        <table border="1">
+          <tr>
+            <th>ID</th>
+            <th>TYPE</th>
+            <th>COLOR</th>
+          </tr>
+          <tr th:each="e : ${events}">
+            <td th:text="${e.id}">id</td>
+            <td th:text="${e.color}">color</td>
+            <td th:text="${e.player}">player</td>
+            <td th:text="${e.game}">game</td>
+          </tr>
+        </table>
+    </body>
+</html>
