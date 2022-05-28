@@ -55,9 +55,9 @@ public class EventService
     public List<List<Object>> getEventsByGameId(int id){
         return eventRepository.getEventsByGameId(id);
     }
-    public Event insertYellowCard(String type, boolean valid, int gameId, String playerId, String user){
+    /*public Event insertYellowCard(String type, boolean valid, int gameId, String playerId, String user){
         return eventRepository.insertYellowCard( type, valid, gameId, playerId, user);
-    }
+    }*/
 /*
     @Transactional
     public void changeProfOffice(int id, String newoffice) {
