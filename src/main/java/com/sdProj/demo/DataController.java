@@ -422,6 +422,31 @@ public class DataController {
         return "redirect:/home";
     }
 
+    
+    
+    @GetMapping("/createTeam")
+    public String createTeam(Model m) {
+        m.addAttribute("team", new Team());
+        return "editTeam";
+    }
+    @GetMapping("/editTeam")
+    public String editTeam(@RequestParam(name="id", required=true) String id, Model m) {
+        Team op = this.teamService.getTeamByName(id);
+        if (op != null) {
+            m.addAttribute("team", op);
+            return "editTeam";
+        }
+        else {
+            return "redirect:/home";
+        }
+    }    
+
+    @PostMapping("/saveTeam")
+    public String saveTeam(@ModelAttribute Team t) {
+        this.teamService.addTeam(t);
+        return "redirect:/home";
+    }
+
 
     @GetMapping("/currentGames")
     public String currentGames(Model model) {
