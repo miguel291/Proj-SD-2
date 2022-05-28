@@ -16,16 +16,26 @@
             <input type="text" name="type" th:value="${event.type}">
         </div>
         <div>
-            <label>Game</label>
-            <input type="text" name="game" th:value="${event.game}">
-        </div>
-        <div>
-            <label>Player</label>
-            <input type="text" name="player" th:value="${event.player}">
-        </div>
-        <div>
             <label>Username</label>
             <input type="text" name="user" th:value="${event.user}">
+        </div>
+        <div>
+            <label>Players</label>
+            <select id="players" th:field="*{event.player}" size="10" multiple="multiple">
+				<option th:each="p : ${allPlayers}"
+						th:value="${{p}}"
+						th:text="${p.name}">
+					The name
+				</option>
+			</select>
+            <label>Games</label>
+            <select id="game" th:field="*{event.game}" size="10" multiple="multiple">
+				<option th:each="g : ${allGames}"
+                        th:value="${{g}}"
+						th:text="${g}">
+					The name
+				</option>
+			</select>
         </div>
         <button type="submit">Register Card Event</button>
     </div>

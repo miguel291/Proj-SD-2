@@ -252,7 +252,8 @@ public class DataController {
     @GetMapping("/createEvent")
     public String createEvent(Model m) {
         m.addAttribute("event", new Event());
-        //m.addAttribute("allProfessors", this.profService.getAllProfessors());
+        m.addAttribute("allGames", this.gameService.getGames());
+        m.addAttribute("allPlayers", this.playerService.getAllPlayers());
         return "editEvent";
     }
 
@@ -261,6 +262,8 @@ public class DataController {
         Optional<Event> op = this.eventService.getEvent(id);
         if (op.isPresent()) {
             m.addAttribute("event", op.get());
+            m.addAttribute("allGames", this.gameService.getGames());
+            m.addAttribute("allPlayers", this.playerService.getAllPlayers());
             return "editEvent";
         }
         else {

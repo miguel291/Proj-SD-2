@@ -46,6 +46,9 @@ public class GameService
     public List<List<Object>> getCurrentGames() {
         return gameRepository.getCurrentGames();
     }
+    public List<Integer> getGames(){
+        return  gameRepository.getGames();
+    }
 /*
     @Transactional
     public void changeGameOffice(int id, String newoffice) {
