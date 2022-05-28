@@ -242,38 +242,38 @@ public class DataController {
         return "editStudent";
     }
 
-        // modelo - eventos
-        @GetMapping("/listEvents")
-        public String listEvents(Model model) {
-            model.addAttribute("events", this.eventService.getAllEvents());
-            return "listEvents";
-        }
-    
-        @GetMapping("/createEvent")
-        public String createEvent(Model m) {
-            m.addAttribute("event", new Event());
-            //m.addAttribute("allProfessors", this.profService.getAllProfessors());
+    // modelo - eventos
+    @GetMapping("/listEvents")
+    public String listEvents(Model model) {
+        model.addAttribute("events", this.eventService.getAllEvents());
+        return "listEvents";
+    }
+
+    @GetMapping("/createEvent")
+    public String createEvent(Model m) {
+        m.addAttribute("event", new Event());
+        //m.addAttribute("allProfessors", this.profService.getAllProfessors());
+        return "editEvent";
+    }
+
+    @GetMapping("/editEvent")
+    public String editEvent(@RequestParam(name="id", required=true) int id, Model m) {
+        Optional<Event> op = this.eventService.getEvent(id);
+        if (op.isPresent()) {
+            m.addAttribute("event", op.get());
             return "editEvent";
         }
-    
-        @GetMapping("/editEvent")
-        public String editEvent(@RequestParam(name="id", required=true) int id, Model m) {
-            Optional<Event> op = this.eventService.getEvent(id);
-            if (op.isPresent()) {
-                m.addAttribute("event", op.get());
-                return "editEvent";
-            }
-            else {
-                return "redirect:/listEvents";
-            }
-        }    
-    
-        @PostMapping("/saveEvent")
-        public String saveEvent(@ModelAttribute Event event) {
-            this.eventService.addEvent(event);
+        else {
             return "redirect:/listEvents";
         }
-        // end modelo
+    }    
+
+    @PostMapping("/saveEvent")
+    public String saveEvent(@ModelAttribute Event event) {
+        this.eventService.addEvent(event);
+        return "redirect:/listEvents";
+    }
+    // end modelo
 
     //Endpoint to show the victories of a team
     @GetMapping("/listTeamStats")

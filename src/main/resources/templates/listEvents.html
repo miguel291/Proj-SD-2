@@ -10,8 +10,9 @@
         <table border="1">
           <tr>
             <th>ID</th>
-            <th>TYPE</th>
             <th>COLOR</th>
+            <th>PLAYER</th>
+            <th>GAME</th> 
           </tr>
           <tr th:each="e : ${events}">
             <td th:text="${e.id}">id</td>

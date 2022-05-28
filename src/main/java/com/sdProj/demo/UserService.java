@@ -32,6 +32,7 @@ public class UserService implements UserDetailsService {
         System.out.println(User);
         userRepository.save(User);    
     }
+    
 /*
     public Optional<User> getUser(int id) {
         return userRepository.findById(id);
@@ -55,3 +56,4 @@ public class UserService implements UserDetailsService {
         return null;
     }
 }    
+
