@@ -1,6 +1,8 @@
 package com.sdProj.data;
 
+import java.sql.Date;
 import java.sql.Time;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,14 +28,14 @@ public class Event {
         generator = "event_id_seq")
     private int id;
     private boolean valid = false;
-    @Column(nullable = false)
-    private Time time;
+    @Column(nullable = true)
+    private Timestamp time;
     private String color;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "game_id", nullable=false)
+    @JoinColumn(name = "game_id", nullable=true)
     private Game game;
 
 
@@ -42,16 +44,20 @@ public class Event {
     private Player player;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable=false)
+    @JoinColumn(name = "user_id", nullable=true)
     private User user;
 
     public Event() {
     }
 
-    public Event(Time time, String color, String type) {
+    public Event(String color, String type, User user, Game game, Player player) {
         this.valid = false;
-        this.time = time;
         this.type = type;
+        this.game = game;
+        this.color = color;
+        this.user = user;
+        this.time = new Timestamp(System.currentTimeMillis());
+        this.valid = true;
     }
 
     public int getId() {
@@ -70,11 +76,11 @@ public class Event {
         this.valid = valid;
     }
 
-    public Time getTime() {
+    public Timestamp getTime() {
         return this.time;
     }
 
-    public void setTime(Time time) {
+    public void setTime(Timestamp time) {
         this.time = time;
     }
 

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;    
 import org.springframework.beans.factory.annotation.Autowired;    
 import org.springframework.stereotype.Service;
@@ -25,10 +26,13 @@ public class EventService
         return userRecords;    
     }
 
-    public void addEvent(Event prof)  
-    {
-        System.out.println(prof);
-        eventRepository.save(prof);    
+    public void addEvent(Event event)  
+    {   
+        //System.out.println(prof);
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        event.setTime(time);
+        event.setValid(true);
+        eventRepository.save(event);    
     }
 
     public Optional<Event> getEvent(int id) {
@@ -50,6 +54,9 @@ public class EventService
 
     public List<List<Object>> getEventsByGameId(int id){
         return eventRepository.getEventsByGameId(id);
+    }
+    public Event insertYellowCard(String type, boolean valid, int gameId, String playerId, String user){
+        return eventRepository.insertYellowCard( type, valid, gameId, playerId, user);
     }
 /*
     @Transactional

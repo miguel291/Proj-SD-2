@@ -1,0 +1,32 @@
+<form th:action="@{/saveEvent}" method="post">
+    <head>
+        <title>Card Event Registration</title>
+        <link rel="stylesheet" href="/team.css"/>
+        <meta charset="utf8"/>
+    </head>
+    <div="form-row">
+        <div>
+            <input type="hidden" th:field="*{event.id}">
+        </div>
+        <div>
+            <label>Card Color</label>
+            <input type="text" name="color" th:value="${event.color}">
+        <div>
+            <label>Type</label>
+            <input type="text" name="type" th:value="${event.type}">
+        </div>
+        <div>
+            <label>Game</label>
+            <input type="text" name="game" th:value="${event.game}">
+        </div>
+        <div>
+            <label>Player</label>
+            <input type="text" name="player" th:value="${event.player}">
+        </div>
+        <div>
+            <label>Username</label>
+            <input type="text" name="user" th:value="${event.user}">
+        </div>
+        <button type="submit">Register Card Event</button>
+    </div>
+</form>
