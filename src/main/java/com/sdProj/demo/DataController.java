@@ -423,6 +423,30 @@ public class DataController {
     }
 
     
+    @GetMapping("/createPlayer")
+    public String createPlayer(Model m) {
+        m.addAttribute("player", new Player());
+        m.addAttribute("allTeams", this.teamService.getAllTeams());
+        return "editPlayer";
+    }
+    @GetMapping("/editPlayer")
+    public String editPlayer(@RequestParam(name="id", required=true) String id, Model m) {
+        Optional<Player> op = this.playerService.getPlayer(id);
+        if (op.isPresent()) {
+            m.addAttribute("player", op.get());
+            return "editPlayer";
+        }
+        else {
+            return "redirect:/home";
+        }
+    }    
+
+    @PostMapping("/savePlayer")
+    public String savePlayer(@ModelAttribute Player t) {
+        this.playerService.addPlayer(t);
+        return "redirect:/home";
+    }
+
     
     @GetMapping("/createTeam")
     public String createTeam(Model m) {

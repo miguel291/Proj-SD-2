@@ -28,11 +28,11 @@ public class PlayerService
     {
         playerRepository.save(player);    
     }
-/*
-    public Optional<Player> getPlayer(int id) {
+
+    public Optional<Player> getPlayer(String id) {
         return playerRepository.findById(id);
     }
-
+/*
     @Transactional
     public void changeplayerOffice(int id, String newoffice) {
         Optional<Player> p = playerRepository.findById(id);
