@@ -29,6 +29,8 @@ public interface EventRepository extends CrudRepository<Event, Integer>
     //Insert yellow card to a given player in a given game by a given user
     @Query(value = "update event set color='red' where count(select color from event where game_id=%?1 and player_id=%?2 and color='yellow')>=2", nativeQuery=true)
     public List<List<Object>> insertYellowCard(int gameId, String player);
+
+
 } 
 
 //select player_id, count(*),CAST (count(*) AS FLOAT) / (select CAST (count(*) AS float) from game_teams where teams_name like min(player.team_name)) from event inner join player on player.name = event.player_id where type like 'Goal' group by player_id

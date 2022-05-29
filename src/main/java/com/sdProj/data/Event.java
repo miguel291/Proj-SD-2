@@ -39,7 +39,7 @@ public class Event {
     private Game game;
 
     @ManyToOne(optional= true,fetch = FetchType.LAZY)
-    @JoinColumn(name = "player_id", nullable=true)
+    @JoinColumn(name = "player_id",nullable=true)
     private Player player; 
 
     @ManyToOne(fetch = FetchType.LAZY)

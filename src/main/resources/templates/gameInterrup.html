@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>List of Events</title>
+        <title>Game Interruption</title>
         <link rel="stylesheet" href="/team.css"/>
         <meta charset="utf8"/>
     </head>
@@ -11,17 +11,13 @@
           <tr>
             <th>ID</th>
             <th>TYPE</th>
-            <th>COLOR</th>
             <th>GAME</th>
-            <th>PLAYER</th>
             <th>TIME</th> 
           </tr>
           <tr th:each="e : ${events}">
             <td th:text="${e.id}">id</td>
             <td th:text="${e.type}">type</td>
-            <td th:text="${e.color}">color</td>
             <td th:text="${e.game.id}">game</td>
-            <td th:text="${e.player.name}">player</td>
             <td th:text="${e.time}">time</td>
           </tr>
         </table>
