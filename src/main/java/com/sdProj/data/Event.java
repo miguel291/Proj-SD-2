@@ -40,7 +40,7 @@ public class Event {
 
     @ManyToOne(optional= true,fetch = FetchType.LAZY)
     @JoinColumn(name = "player_id", nullable=true)
-    private Player player;
+    private Player player; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable=true)
@@ -57,6 +57,7 @@ public class Event {
         this.user = user;
         this.time = new Timestamp(System.currentTimeMillis());
         this.valid = true;
+        this.player.setName("None");
     }
 
     public int getId() {
