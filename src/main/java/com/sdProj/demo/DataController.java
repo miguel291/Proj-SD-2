@@ -248,6 +248,8 @@ public class DataController {
         return "listStudents";
     }
 
+
+
     @GetMapping("/createStudent")
     public String createStudent(Model m) {
         m.addAttribute("student", new Student());
@@ -326,7 +328,6 @@ public class DataController {
     public String createEventInt(Model m){
         m.addAttribute("event", new Event());
         m.addAttribute("allGames", this.gameService.getGames());
-        m.addAttribute("player", this.playerService.addPlayerNull());
         return "editEventInt";
     }
 
@@ -334,10 +335,8 @@ public class DataController {
     public String editEventInt(@RequestParam(name="id", required=true) int id, Model m) {
         Optional<Event> op = this.eventService.getEvent(id);
         if (op.isPresent()) {
-            
             m.addAttribute("event", op.get());
             m.addAttribute("allGames", this.gameService.getGames());
-            //m.addAttribute("player", this.eventService.insertInt());
             return "editEventInt";
         }
         else {
@@ -349,6 +348,13 @@ public class DataController {
     public String saveEventInt(@ModelAttribute Event event) {
         this.eventService.addEventInt(event);
         return "redirect:/home";
+    }
+
+    // Show all events
+    @GetMapping("/showEvents")
+    public String listAllEvents(Model model) {
+        model.addAttribute("events", this.eventService.getAllEvents());
+        return "showEvents";
     }
 
     //Endpoint to show the victories of a team
