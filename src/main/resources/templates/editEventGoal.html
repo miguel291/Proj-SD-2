@@ -14,7 +14,7 @@
         </div>
         <div>
             <label>Players</label>
-            <select id="players" th:field="*{event.player}" size="10" multiple="multiple">
+            <select th:field="*{event.player}">
 				<option th:each="p : ${allPlayers}"
 						th:value="${{p}}"
 						th:text="${p.name}">
@@ -24,7 +24,7 @@
         </div>
         <div>
             <label>Games</label>
-            <select id="game" th:field="*{event.game}" size="10" multiple="multiple">
+            <select th:field="*{event.game}">
 				<option th:each="g : ${allGames}"
                         th:value="${{g}}"
 						th:text="${g}">

@@ -310,7 +310,7 @@ public class DataController {
 
     // Interruption Event
     @GetMapping("/createEventInt")
-    public String createEventInt(Model m) {
+    public String createEventInt(Model m){
         m.addAttribute("event", new Event());
         m.addAttribute("allGames", this.gameService.getGames());
         m.addAttribute("player", this.playerService.addPlayerNull());
@@ -465,6 +465,7 @@ public class DataController {
     @GetMapping("/createGame")
     public String createGame(Model m) {
         m.addAttribute("game", new Game());
+        m.addAttribute("allTeams", this.teamService.getAllTeams());
         return "editGame";
     }
     @GetMapping("/editGame")

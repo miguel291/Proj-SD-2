@@ -15,14 +15,22 @@
             <input type="text" name="gameDate" th:value="${gameDate}">
         </div>
         <div>
-            <label>Teams</label>
-            <select th:field="*{Teams}" >
-                <option th:each="t : ${allTeams}"
-                        th:value="${{t.name}}"
-                        th:text="${t.name}">
-                    The name
-                </option>
-            </select>
+            <label>Team A</label>
+            <select th:field="*{Teams}">
+				<option th:each="ts : ${allTeams}"
+						th:value="${{ts}}"
+						th:text="${ts.name}">
+					The name
+				</option>
+			</select>
+            <label>Team B</label>
+            <select th:field="*{Teams}">
+				<option th:each="ts : ${allTeams}"
+						th:value="${{ts}}"
+						th:text="${ts.name}">
+					The name
+				</option>
+			</select>
         </div>
         <button type="submit">Player Team</button>
     </div>
