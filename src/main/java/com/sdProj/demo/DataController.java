@@ -77,8 +77,6 @@ public class DataController {
             return "error_page";
         }
     }
-    
-    
     @GetMapping("/login")
     public String getLoginPage(Model model) {
         model.addAttribute("loginRequest", new User());
