@@ -1,0 +1,41 @@
+
+<form th:action="@{/savePlayer}" th:object="${player}" method="post">
+    <head>
+        <title>Player Registration</title>
+        <link rel="stylesheet" href="/team.css"/>
+        <meta charset="utf8"/>
+    </head>
+    <div="form-row">
+        <div>
+            <label>name</label>
+            <input type="text" name="name" th:value="${name}">
+        </div>
+        <div>
+            <label>position</label>
+            <input type="text" name="position" th:value="${position}">
+        </div>
+        <div>
+            <label>photo</label>
+            <input type="text" name="photo" th:value="${photo}">
+        </div>
+        <div>
+            <label>Birth Date</label>
+            <input type="birthDate" name="birthDate" th:value="${birthDate}">
+        </div>
+        <div>
+            <label>Teams</label>
+            <select th:field="*{team}" >
+                <option th:each="t : ${allTeams}"
+                        th:value="${{t.name}}"
+                        th:text="${t.name}">
+                    The name
+                </option>
+            </select>
+        </div>
+        <button type="submit">Player Team</button>
+    </div>
+</form>
+
+
+
+

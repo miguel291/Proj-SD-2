@@ -1,0 +1,31 @@
+
+<form th:action="@{/saveUser}" th:object="${user}" method="post">
+    <head>
+        <title>User Registration</title>
+        <link rel="stylesheet" href="/team.css"/>
+        <meta charset="utf8"/>
+    </head>
+    <div="form-row">
+        <div>
+            <label>username</label>
+            <input type="text" name="username" th:value="${username}">
+        </div>
+        <div>
+            <label>password</label>
+            <input type="password" name="password" th:value="${password}">
+        </div>
+        <div>
+            <label>phone</label>
+            <input type="text" name="phone" th:value="${phone}">
+        </div>
+        <div>
+            <label>name</label>
+            <input type="text" name="name" th:value="${name}">
+        </div>
+        <div>
+            <label>role</label>
+            <input type="text" name="role" th:value="${role}">
+        </div>
+        <button type="submit">Register User</button>
+    </div>
+</form>

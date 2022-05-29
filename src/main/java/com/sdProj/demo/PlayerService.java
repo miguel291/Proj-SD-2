@@ -30,18 +30,18 @@ public class PlayerService
     {
         playerRepository.save(player);    
     }
-
-    public Player addPlayerNull()  
+  
+   public Optional<Player> getPlayer(String id) {
+        return playerRepository.findById(id);
+    }
+  
+   public Player addPlayerNull()  
     {
         Player player = new Player();
         player.setName("None");  
         return player;
     }
 /*
-    public Optional<Player> getPlayer(int id) {
-        return playerRepository.findById(id);
-    }
-
     @Transactional
     public void changeplayerOffice(int id, String newoffice) {
         Optional<Player> p = playerRepository.findById(id);
