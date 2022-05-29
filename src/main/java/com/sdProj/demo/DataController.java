@@ -66,12 +66,25 @@ public class DataController {
 
     @Autowired
     UserService userService;
-
+    
+    @PostMapping("/login")
+    public String login (@ModelAttribute User u) {
+        System.out.println("login request: " + u);
+        Optional<User> authenticated = userService.authenticate(u.getusername(), u.getPassword());
+        if(authenticated.isPresent()){
+            return "redirect:/home";
+        }else{
+            return "error_page";
+        }
+    }
+    
+    
     @GetMapping("/login")
-    public String login() {
+    public String getLoginPage(Model model) {
+        model.addAttribute("loginRequest", new User());
         return "login";
     }
-
+    
     @GetMapping("/home")
     public String home() {
         return "home";

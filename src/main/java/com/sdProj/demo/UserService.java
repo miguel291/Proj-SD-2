@@ -36,6 +36,15 @@ public class UserService implements UserDetailsService {
     public Optional<User> getUser(String id) {
         return userRepository.findById(id);
     }
+
+    public Optional<User> authenticate(String username, String password) {
+        Optional<User> user = userRepository.auth(username, password);
+        if(user == null){
+            throw new UsernameNotFoundException("User Not Found");
+        }
+        //return new CustomUserDetails(user);
+        return user;
+    }
     
 /*
     public Optional<User> getUser(int id) {
