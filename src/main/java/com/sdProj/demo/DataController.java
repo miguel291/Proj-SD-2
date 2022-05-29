@@ -559,6 +559,15 @@ public class DataController {
         return getEditPlayerForm(id, "editPlayer", m);
     }
     
+    private String getEditTeamForm(String id, String formName, Model m) {
+        Team op = this.teamService.getTeamByName(id);
+        if (op != null) {
+            m.addAttribute("team", op);
+            return formName;
+        }
+        return "redirect:/home";
+    }
+
     @GetMapping("/createTeam")
     public String createTeam(Model m) {
         m.addAttribute("team", new Team());
@@ -582,6 +591,11 @@ public class DataController {
         return "redirect:/home";
     }
 
+    @GetMapping("/changeTeam")
+    public String getTeamForm(@RequestParam(name="id", required=true) String id, Model m) {
+        return getEditTeamForm(id, "editTeam", m);
+    }
+    
 
     @GetMapping("/currentGames")
     public String currentGames(Model model) {
