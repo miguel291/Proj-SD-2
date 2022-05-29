@@ -1,0 +1,23 @@
+
+<form th:action="@{/saveTeam}" th:object="${team}" method="post">
+    <head>
+        <title>Team Registration</title>
+        <link rel="stylesheet" href="/team.css"/>
+        <meta charset="utf8"/>
+    </head>
+    <div="form-row">
+        <div>
+            <label>name</label>
+            <input type="text" name="name" th:value="${name}">
+        </div>
+        <div>
+            <label>logo</label>
+            <input type="text" name="logo" th:value="${logo}">
+        </div>
+        <div>
+            <label>stadium</label>
+            <input type="text" name="stadium" th:value="${stadium}">
+        </div>
+        <button type="submit">Register Team</button>
+    </div>
+</form>

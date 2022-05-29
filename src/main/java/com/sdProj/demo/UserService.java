@@ -26,11 +26,15 @@ public class UserService implements UserDetailsService {
         userRepository.findAll().forEach(userRecords::add);    
         return userRecords;    
     }
-
-    public void addUser(User User)  
+    
+    public void addUser(User u)  
     {
-        System.out.println(User);
-        userRepository.save(User);    
+        userRepository.save(u);    
+    }
+    
+
+    public Optional<User> getUser(String id) {
+        return userRepository.findById(id);
     }
     
 /*

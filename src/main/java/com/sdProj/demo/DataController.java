@@ -461,6 +461,80 @@ public class DataController {
         return "listPlayerGoalStats";
     }
 
+    
+    @GetMapping("/createUser")
+    public String createUser(Model m) {
+        m.addAttribute("user", new User());
+        return "editUser";
+    }
+    @GetMapping("/editUser")
+    public String editUser(@RequestParam(name="id", required=true) String id, Model m) {
+        Optional<User> op = this.userService.getUser(id);
+        if (op.isPresent()) {
+            m.addAttribute("user", op.get());
+            return "editUser";
+        }
+        else {
+            return "redirect:/home";
+        }
+    }    
+
+    @PostMapping("/saveUser")
+    public String saveUser(@ModelAttribute User u) {
+        this.userService.addUser(u);
+        return "redirect:/home";
+    }
+
+    
+    @GetMapping("/createPlayer")
+    public String createPlayer(Model m) {
+        m.addAttribute("player", new Player());
+        m.addAttribute("allTeams", this.teamService.getAllTeams());
+        return "editPlayer";
+    }
+    @GetMapping("/editPlayer")
+    public String editPlayer(@RequestParam(name="id", required=true) String id, Model m) {
+        Optional<Player> op = this.playerService.getPlayer(id);
+        if (op.isPresent()) {
+            m.addAttribute("player", op.get());
+            return "editPlayer";
+        }
+        else {
+            return "redirect:/home";
+        }
+    }    
+
+    @PostMapping("/savePlayer")
+    public String savePlayer(@ModelAttribute Player t) {
+        this.playerService.addPlayer(t);
+        return "redirect:/home";
+    }
+
+    
+    @GetMapping("/createTeam")
+    public String createTeam(Model m) {
+        m.addAttribute("team", new Team());
+        return "editTeam";
+    }
+    @GetMapping("/editTeam")
+    public String editTeam(@RequestParam(name="id", required=true) String id, Model m) {
+        Team op = this.teamService.getTeamByName(id);
+        if (op != null) {
+            m.addAttribute("team", op);
+            return "editTeam";
+        }
+        else {
+            return "redirect:/home";
+        }
+    }    
+
+    @PostMapping("/saveTeam")
+    public String saveTeam(@ModelAttribute Team t) {
+        this.teamService.addTeam(t);
+        return "redirect:/home";
+    }
+
+
     @GetMapping("/currentGames")
     public String currentGames(Model model) {
         List<List<Object>> currentGamessData = this.gameService.getCurrentGames();
