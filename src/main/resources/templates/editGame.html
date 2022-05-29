@@ -16,7 +16,7 @@
         </div>
         <div>
             <label>Teams</label>
-            <select th:field="*{teams}" >
+            <select th:field="*{Teams}" >
                 <option th:each="t : ${allTeams}"
                         th:value="${{t.name}}"
                         th:text="${t.name}">

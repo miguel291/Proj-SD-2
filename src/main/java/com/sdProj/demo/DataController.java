@@ -485,6 +485,14 @@ public class DataController {
         return "redirect:/home";
     }
 
+    private String getEditUserForm(String id, String formName, Model m) {
+        Optional<User> op = this.userService.getUser(id);
+        if (op.isPresent()) {
+            m.addAttribute("user", op.get());
+            return formName;
+        }
+        return "redirect:/home";
+    }
 
     @GetMapping("/createUser")
     public String createUser(Model m) {
@@ -508,8 +516,20 @@ public class DataController {
         this.userService.addUser(u);
         return "redirect:/home";
     }
+    @GetMapping("/changeUser")
+    public String getUserForm(@RequestParam(name="id", required=true) String id, Model m) {
+        return getEditUserForm(id, "editUser", m);
+    }
 
-    
+    private String getEditPlayerForm(String id, String formName, Model m) {
+        Optional<Player> op = this.playerService.getPlayer(id);
+        if (op.isPresent()) {
+            m.addAttribute("player", op.get());
+            return formName;
+        }
+        return "redirect:/home";
+    }
+
     @GetMapping("/createPlayer")
     public String createPlayer(Model m) {
         m.addAttribute("player", new Player());
@@ -534,6 +554,10 @@ public class DataController {
         return "redirect:/home";
     }
 
+    @GetMapping("/changePlayer")
+    public String getPlayerForm(@RequestParam(name="id", required=true) String id, Model m) {
+        return getEditPlayerForm(id, "editPlayer", m);
+    }
     
     @GetMapping("/createTeam")
     public String createTeam(Model m) {
