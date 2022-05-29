@@ -276,7 +276,67 @@ public class DataController {
         this.eventService.addEvent(event);
         return "redirect:/listEvents";
     }
+
     // end modelo
+
+    // Goal Event
+    @GetMapping("/createEventGoal")
+    public String createEventGoal(Model m) {
+        m.addAttribute("event", new Event());
+        m.addAttribute("allGames", this.gameService.getGames());
+        m.addAttribute("allPlayers", this.playerService.getAllPlayers());
+        return "editEventGoal";
+    }
+
+    @GetMapping("/editEventGoal")
+    public String editEventGoal(@RequestParam(name="id", required=true) int id, Model m) {
+        Optional<Event> op = this.eventService.getEvent(id);
+        if (op.isPresent()) {
+            m.addAttribute("event", op.get());
+            m.addAttribute("allGames", this.gameService.getGames());
+            m.addAttribute("allPlayers", this.playerService.getAllPlayers());
+            return "editEventGoal";
+        }
+        else {
+            return "redirect:/listEvents";
+        }
+    }    
+
+    @PostMapping("/saveEventGoal")
+    public String saveEventGoal(@ModelAttribute Event event) {
+        this.eventService.addEventGoal(event);
+        return "redirect:/listEvents";
+    }
+
+    // Interruption Event
+    @GetMapping("/createEventInt")
+    public String createEventInt(Model m) {
+        m.addAttribute("event", new Event());
+        m.addAttribute("allGames", this.gameService.getGames());
+        m.addAttribute("player", this.playerService.addPlayerNull());
+        return "editEventInt";
+    }
+
+    @GetMapping("/editEventInt")
+    public String editEventInt(@RequestParam(name="id", required=true) int id, Model m) {
+        Optional<Event> op = this.eventService.getEvent(id);
+        if (op.isPresent()) {
+            
+            m.addAttribute("event", op.get());
+            m.addAttribute("allGames", this.gameService.getGames());
+            m.addAttribute("player", this.eventService.insertInt());
+            return "editEventInt";
+        }
+        else {
+            return "redirect:/home";
+        }
+    }    
+
+    @PostMapping("/saveEventInt")
+    public String saveEventInt(@ModelAttribute Event event) {
+        this.eventService.addEventInt(event);
+        return "redirect:/home";
+    }
 
     //Endpoint to show the victories of a team
     @GetMapping("/listTeamStats")
