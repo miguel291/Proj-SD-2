@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+
 import java.sql.Timestamp;
 import java.util.ArrayList;    
 import org.springframework.beans.factory.annotation.Autowired;    
@@ -59,9 +60,9 @@ public class EventService
         event.setTime(time);
         event.setValid(true);
         event.setColor("None");
+        //event.getPlayer().setName("None");
         event.setType("interruption");
         eventRepository.save(event);    
-        
     }
 
     public Optional<Event> getEvent(int id) {
@@ -88,6 +89,14 @@ public class EventService
     public List<List<Object>> insertYellowCard(int gameId, String player){
         return eventRepository.insertYellowCard(gameId, player);
     }
+
+    /*public List<List<Object>> insertInt(){
+        return eventRepository.insertInt();
+    }
+
+    public List<List<Object>> insertIntNull(){
+        return eventRepository.insertInt();
+    }*/
 
     /*public Event insertYellowCard(String type, boolean valid, int gameId, String playerId, String user){
         return eventRepository.insertYellowCard( type, valid, gameId, playerId, user);
