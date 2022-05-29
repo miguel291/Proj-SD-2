@@ -468,6 +468,38 @@ public class DataController {
     }
 
     
+    @GetMapping("/createGame")
+    public String createGame(Model m) {
+        m.addAttribute("game", new Game());
+        return "editGame";
+    }
+    @GetMapping("/editGame")
+    public String editGame(@RequestParam(name="id", required=true) int id, Model m) {
+        Optional<Game> op = this.gameService.getGame(id);
+        if (op.isPresent()) {
+            m.addAttribute("game", op.get());
+            return "editGame";
+        }
+        else {
+            return "redirect:/home";
+        }
+    }    
+
+    @PostMapping("/saveGame")
+    public String saveGame(@ModelAttribute Game u) {
+        this.gameService.addGame(u);
+        return "redirect:/home";
+    }
+
+    private String getEditUserForm(String id, String formName, Model m) {
+        Optional<User> op = this.userService.getUser(id);
+        if (op.isPresent()) {
+            m.addAttribute("user", op.get());
+            return formName;
+        }
+        return "redirect:/home";
+    }
+
     @GetMapping("/createUser")
     public String createUser(Model m) {
         m.addAttribute("user", new User());
@@ -490,8 +522,20 @@ public class DataController {
         this.userService.addUser(u);
         return "redirect:/home";
     }
+    @GetMapping("/changeUser")
+    public String getUserForm(@RequestParam(name="id", required=true) String id, Model m) {
+        return getEditUserForm(id, "editUser", m);
+    }
 
-    
+    private String getEditPlayerForm(String id, String formName, Model m) {
+        Optional<Player> op = this.playerService.getPlayer(id);
+        if (op.isPresent()) {
+            m.addAttribute("player", op.get());
+            return formName;
+        }
+        return "redirect:/home";
+    }
+
     @GetMapping("/createPlayer")
     public String createPlayer(Model m) {
         m.addAttribute("player", new Player());
@@ -516,7 +560,20 @@ public class DataController {
         return "redirect:/home";
     }
 
+    @GetMapping("/changePlayer")
+    public String getPlayerForm(@RequestParam(name="id", required=true) String id, Model m) {
+        return getEditPlayerForm(id, "editPlayer", m);
+    }
     
+    private String getEditTeamForm(String id, String formName, Model m) {
+        Team op = this.teamService.getTeamByName(id);
+        if (op != null) {
+            m.addAttribute("team", op);
+            return formName;
+        }
+        return "redirect:/home";
+    }
+
     @GetMapping("/createTeam")
     public String createTeam(Model m) {
         m.addAttribute("team", new Team());
@@ -540,6 +597,11 @@ public class DataController {
         return "redirect:/home";
     }
 
+    @GetMapping("/changeTeam")
+    public String getTeamForm(@RequestParam(name="id", required=true) String id, Model m) {
+        return getEditTeamForm(id, "editTeam", m);
+    }
+    
 
     @GetMapping("/currentGames")
     public String currentGames(Model model) {

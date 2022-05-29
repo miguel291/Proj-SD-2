@@ -1,0 +1,33 @@
+
+<form th:action="@{/saveGame}" th:object="${game}" method="post">
+    <head>
+        <title>Game Registration</title>
+        <link rel="stylesheet" href="/team.css"/>
+        <meta charset="utf8"/>
+    </head>
+    <div="form-row">
+        <div>
+            <label>location</label>
+            <input type="text" name="location" th:value="${location}">
+        </div>
+        <div>
+            <label>gameDate</label>
+            <input type="text" name="gameDate" th:value="${gameDate}">
+        </div>
+        <div>
+            <label>Teams</label>
+            <select th:field="*{Teams}" >
+                <option th:each="t : ${allTeams}"
+                        th:value="${{t.name}}"
+                        th:text="${t.name}">
+                    The name
+                </option>
+            </select>
+        </div>
+        <button type="submit">Player Team</button>
+    </div>
+</form>
+
+
+
+
