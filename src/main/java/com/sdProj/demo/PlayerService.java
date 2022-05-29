@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;    
 import org.springframework.stereotype.Service;
 
+import net.bytebuddy.asm.Advice.Return;
+
 import com.sdProj.data.Player;
 
 @Service    
@@ -28,9 +30,16 @@ public class PlayerService
     {
         playerRepository.save(player);    
     }
-
-    public Optional<Player> getPlayer(String id) {
+  
+   public Optional<Player> getPlayer(String id) {
         return playerRepository.findById(id);
+    }
+  
+   public Player addPlayerNull()  
+    {
+        Player player = new Player();
+        player.setName("None");  
+        return player;
     }
 /*
     @Transactional

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sdProj.data.Event;
+import com.sdProj.data.Player;
 import com.sdProj.data.Team;
 
 @Service    
@@ -32,7 +33,35 @@ public class EventService
         Timestamp time = new Timestamp(System.currentTimeMillis());
         event.setTime(time);
         event.setValid(true);
+        event.setType("card");
         eventRepository.save(event);    
+        //Função update cartões amarelos: dá erro uma vez que não existem jogos ativos no currentGames
+        //eventRepository.insertYellowCard(event.getGame().getId(), event.getPlayer().getName());
+        
+    }
+
+    public void addEventGoal(Event event)  
+    {   
+        //System.out.println(prof);
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        event.setTime(time);
+        event.setValid(true);
+        event.setColor("None");
+        event.setType("goal");
+        eventRepository.save(event);    
+        
+    }
+
+    public void addEventInt(Event event)  
+    {   
+        //System.out.println(prof);
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        event.setTime(time);
+        event.setValid(true);
+        event.setColor("None");
+        event.setType("interruption");
+        eventRepository.save(event);    
+        
     }
 
     public Optional<Event> getEvent(int id) {
@@ -55,6 +84,11 @@ public class EventService
     public List<List<Object>> getEventsByGameId(int id){
         return eventRepository.getEventsByGameId(id);
     }
+
+    public List<List<Object>> insertYellowCard(int gameId, String player){
+        return eventRepository.insertYellowCard(gameId, player);
+    }
+
     /*public Event insertYellowCard(String type, boolean valid, int gameId, String playerId, String user){
         return eventRepository.insertYellowCard( type, valid, gameId, playerId, user);
     }*/

@@ -1,6 +1,6 @@
-<form th:action="@{/saveEvent}" method="post">
+<form th:action="@{/saveEventGoal}" method="post">
     <head>
-        <title>Card Event Registration</title>
+        <title>Goal Registration</title>
         <link rel="stylesheet" href="/team.css"/>
         <meta charset="utf8"/>
     </head>
@@ -13,10 +13,6 @@
             <input type="text" name="user" th:value="${event.user}">
         </div>
         <div>
-            <label>Color</label>
-            <input type="text" name="color" th:value="${event.color}">
-        </div>
-        <div>
             <label>Players</label>
             <select id="players" th:field="*{event.player}" size="10" multiple="multiple">
 				<option th:each="p : ${allPlayers}"
@@ -25,6 +21,8 @@
 					The name
 				</option>
 			</select>
+        </div>
+        <div>
             <label>Games</label>
             <select id="game" th:field="*{event.game}" size="10" multiple="multiple">
 				<option th:each="g : ${allGames}"
@@ -34,6 +32,6 @@
 				</option>
 			</select>
         </div>
-        <button type="submit">Register Card Event</button>
+        <button type="submit">Register Goal Event</button>
     </div>
 </form>
