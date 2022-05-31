@@ -30,6 +30,12 @@ public interface EventRepository extends CrudRepository<Event, Integer>
     @Query(value = "update event set color='red' where count(select color from event where game_id=%?1 and player_id=%?2 and color='yellow')>=2", nativeQuery=true)
     public List<List<Object>> insertYellowCard(int gameId, String player);
 
+    @Query(value="select event.id, event.color, event.time, event.type, event.valid, event.game_id, event.player_id, event.user_id from event join game on event.game_id = game.id where game.game_date BETWEEN NOW() - INTERVAL '2 HOURS' AND NOW() order by event.time", nativeQuery = true)
+    public List<Object[]> selectFalseEvents();
+    
+    @Query(value="update event set (valid='true') where game_id=%?1", nativeQuery = true)
+    public List<Object[]> validateEvents(int id);
+    
 
 } 
 

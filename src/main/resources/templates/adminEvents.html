@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Validation of Events</title>
+        <link rel="stylesheet" href="/team.css"/>
+        <meta charset="utf8"/>
+    </head>
+    <body>
+        <h1>Validation of Events</h1>
+        <table border="1">
+          <label>Eventos Inválidos no momento</label>
+            <select id="admEvents" th:field="*{admEvents}" size="10" multiple="multiple">
+				<option th:each="ad : ${admEvents}"
+						th:value="${{ad}}"
+						th:text="${ad.id} ${ad.game.id} ${ad.time}">
+					The name
+				</option>
+			</select>  
+            <button type="submit">Register Interruption Event</button>        
+          </tr>
+        </table>
+    </body>
+</html>
