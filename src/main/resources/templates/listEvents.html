@@ -15,6 +15,7 @@
             <th>GAME</th>
             <th>PLAYER</th>
             <th>TIME</th> 
+            <th>VALID</th> 
           </tr>
           <tr th:each="e : ${events}">
             <td th:text="${e.id}">id</td>
@@ -23,6 +24,7 @@
             <td th:text="${e.game.id}">game</td>
             <td th:text="${e?.player?.name}">player</td>
             <td th:text="${e.time}">time</td>
+            <td th:text="${e.valid}">time</td>
           </tr>
         </table>
     </body>

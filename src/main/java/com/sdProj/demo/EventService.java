@@ -66,6 +66,18 @@ public class EventService
         eventRepository.save(event);    
     }
 
+    public void addEventRes(Event event)  
+    {   
+        //System.out.println(prof);
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        event.setTime(time);
+        event.setValid(false);
+        event.setColor("");
+        //event.getPlayer().setName("None");
+        event.setType("Resume");
+        eventRepository.save(event);    
+    }
+
     public Optional<Event> getEvent(int id) {
         return eventRepository.findById(id);
     }

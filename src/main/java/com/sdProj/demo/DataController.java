@@ -349,10 +349,40 @@ public class DataController {
         return "redirect:/home";
     }
 
+     // Resume Event
+     @GetMapping("/createEventRes")
+     public String createEventRes(Model m){
+         m.addAttribute("event", new Event());
+         m.addAttribute("allGames", this.gameService.getGames());
+         return "editEventRes";
+     }
+ 
+     @GetMapping("/editEventRes")
+     public String editEventRes(@RequestParam(name="id", required=true) int id, Model m) {
+         Optional<Event> op = this.eventService.getEvent(id);
+         if (op.isPresent()) {
+             m.addAttribute("event", op.get());
+             m.addAttribute("allGames", this.gameService.getGames());
+             return "editEventRes";
+         }
+         else {
+             return "redirect:/home";
+         }
+     }    
+ 
+     @PostMapping("/saveEventRes")
+     public String saveEventRes(@ModelAttribute Event event) {
+         this.eventService.addEventRes(event);
+         return "redirect:/home";
+     }
+
     // Show all events
     @GetMapping("/showEvents")
     public String listAllEvents(Model model) {
         model.addAttribute("events", this.eventService.getAllEvents());
+        for(Object o : this.eventService.getAllEvents()){
+            System.out.println(o);
+        }
         return "listEvents";
     }
 
@@ -362,12 +392,21 @@ public class DataController {
         return "adminEvents";
     }
 
+    @PostMapping("/saveAdmEvents")
+    public String saveAdmEvents(@ModelAttribute int id){
+        Optional<Event> e = this.eventService.getEvent(id);
+        if(e.isPresent()){
+            this.eventService.validateEvents(e.get().getId());
+        }
+        return "saveAdminEvents";
+    }
+/*
     @GetMapping("/saveAdmEvents")
     public String saveAdmEvents(@RequestParam(name="id", required=true) int id,Model m){
         m.addAttribute("admEvents", this.eventService.validateEvents(id));
         return "saveAdminEvents";
     }
-
+*/
 
     //Endpoint to show the victories of a team
     @GetMapping("/listTeamStats")
@@ -757,4 +796,58 @@ Falta autenticaçao dos utilizadores para a edição de eventos e visualização
 Como fazer em relação aos jogos interrompidos: criar uma nva coluna associada ao jogo a dizer se esta interrompido ou não e inserir evento da mesma forma de sempre. Contudo apenas eventos de "resume" serão permitidos.
 
 
+
+
+
+
+select * from game where id = 360
+select * from event join game on event.game_id = game.id where game.game_date BETWEEN NOW() - INTERVAL '2 HOURS' AND NOW() order by event.time
+
+select event.id, event.color, event.time, event.type, event.valid, event.game_id, event.player_id, event.user_id from event join game on event.game_id = game.id where event.valid = false and game.game_date BETWEEN NOW() - INTERVAL '2 HOURS' AND NOW() order by event.time
+
+insert into users values ('amanda','amanda','123',34913,'ADMIN');
+insert into event values (6,'Yellow',current_timestamp,'Card',true,132,'J. Danns','amanda');
+select * from users
+
+select * from player
+select player.team_name,count(*) from event join player on event.player_id = player.name where game_id in  (select games_id from game_teams where teams_name like 'Liverpool' and games_id in (select games_id from game_teams where teams_name like 'Everton')) and color like 'Red' and valid is true group by player.team_name
+
+select * from game where location like 'Goodison Park' and winner like 'Liverpool'
+
+insert into event values (7,'Yellow',current_timestamp,'Card',true,132,'G. Sigurðsson','amanda');
+insert into event values (8,'Yellow',current_timestamp,'Card',true,132,'J. Danns','amanda');
+insert into event values (9,'Yellow',current_timestamp,'Card',true,132,'J. Danns','amanda');
+insert into event values (14,'Red',current_timestamp,'Card',true,335,'Marc Navarro','amanda');
+insert into event values (16,'Red',current_timestamp,'Card',true,335,'J. Danns','amanda');
+
+
+select * from game
+insert into users values ('amanda','amanda','123',34913,'ADMIN');
+insert into game values (690,0,current_timestamp,3,'Anfield','TBD');
+insert into game_teams values (690,'Everton');
+insert into game_teams values (690,'Liverpool');
+insert into event values (8,'',current_timestamp,'Goal',true,690,'J. Danns','amanda');
+
+insert into game values (692,0,current_timestamp,3,'Anfield','TBD');
+insert into game_teams values (692,'Manchester City');
+insert into game_teams values (692,'Watford');
+insert into event values (11,'',current_timestamp,'Goal',true,692,'Kamil Conteh','amanda');
+insert into event values (13,'Red',current_timestamp,'Card',true,692,'Kamil Conteh','amanda');
+
+
+delete from event
+select * from event where game_id = 690
+select id,color,time,type,player_id from event
+
+select stadium,name,id,home_goals,away_goals, cast(date_trunc('second', current_timestamp-game_date) as time) as time,location from game join game_teams on game.id = game_teams.games_id join team on teams_name = name where game_date BETWEEN NOW() - INTERVAL '2 HOURS' AND NOW() order by id
+
+CAST('yourString' AS varchar(50)) as anyColumnName
+
+select * from game_teams where teams_name like 'Leicester'
+
+insert into event values (14,'Red',current_timestamp,'Card',true,335,'Marc Navarro','amanda');
+insert into event values (18,'Red',current_timestamp,'Card',true,360,'J. Danns','amanda');
+
+
+select event.id, event.color, event.time, event.type, event.valid, event.game_id, event.player_id, event.user_id from event join game on event.game_id = game.id where game.game_date BETWEEN NOW() - INTERVAL '2 HOURS' AND NOW() order by event.time
 */

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+  <form th:action="@{/saveAdmEvents}" th:object="${Integer}" method="post">
     <head>
         <title>Validation of Events</title>
         <link rel="stylesheet" href="/team.css"/>
@@ -11,13 +12,40 @@
           <label>Eventos Inválidos no momento</label>
             <select id="admEvents" th:field="*{admEvents}" size="10" multiple="multiple">
 				<option th:each="ad : ${admEvents}"
-						th:value="${{ad}}"
-						th:text="${ad.id} ${ad.game.id} ${ad.time}">
+						th:value="${{ad[0]}}"
+						th:text="${ad[0]} ">
 					The name
 				</option>
 			</select>  
-            <button type="submit">Register Interruption Event</button>        
+            <button type="submit">Register Valid Event</button>        
+          </tr>
+        </table>
+        <table class="table-fill">
+          <thead>
+            <tr>
+              <th class="text-left">Event Id</th>
+              <th class="text-left">Color</th>
+              <th class="text-left">Time</th>
+              <th class="text-left">Type</th>
+              <th class="text-left">Game Id</th>
+              <th class="text-left">Player Id</th>
+              <th class="text-left">User Id</th>
+            </tr>
+              </thead>
+              <tbody class="table-hover">
+          <tr th:each="ad : ${admEvents}">
+            <td class="text-left" th:text="${ad[0]}">event id</td>
+            <td class="text-left" th:text="${ad[1]}">color</td>
+            <td class="text-left" th:text="${ad[2]}">time</td>  
+            <td class="text-left" th:text="${ad[3]}">type</td>            
+            <td class="text-left" th:text="${ad[5]}">game id</td>
+            <td class="text-left" th:text="${ad[6]}">player id</td>
+            <td class="text-left" th:text="${ad[7]}">user id</td>
+              </ul>
+            </td>
           </tr>
         </table>
     </body>
+  </form>
 </html>
+
