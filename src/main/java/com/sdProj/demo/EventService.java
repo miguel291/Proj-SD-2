@@ -34,7 +34,7 @@ public class EventService
         //System.out.println(prof);
         Timestamp time = new Timestamp(System.currentTimeMillis());
         event.setTime(time);
-        event.setValid(true);
+        event.setValid(false);
         event.setType("card");
         eventRepository.save(event);    
         //Função update cartões amarelos: dá erro uma vez que não existem jogos ativos no currentGames
@@ -47,7 +47,7 @@ public class EventService
         //System.out.println(prof);
         Timestamp time = new Timestamp(System.currentTimeMillis());
         event.setTime(time);
-        event.setValid(true);
+        event.setValid(false);
         event.setColor("None");
         event.setType("goal");
         eventRepository.save(event);    
@@ -59,7 +59,7 @@ public class EventService
         //System.out.println(prof);
         Timestamp time = new Timestamp(System.currentTimeMillis());
         event.setTime(time);
-        event.setValid(true);
+        event.setValid(false);
         event.setColor("None");
         //event.getPlayer().setName("None");
         event.setType("interruption");
@@ -89,6 +89,14 @@ public class EventService
 
     public List<List<Object>> insertYellowCard(int gameId, String player){
         return eventRepository.insertYellowCard(gameId, player);
+    }
+
+    public List<Object[]> selectFalseEvents(){
+        return eventRepository.selectFalseEvents();
+    }
+
+    public List<Object[]> validateEvents(int id){
+        return eventRepository.validateEvents(id);
     }
 
     /*public List<List<Object>> insertInt(){

@@ -353,8 +353,21 @@ public class DataController {
     @GetMapping("/showEvents")
     public String listAllEvents(Model model) {
         model.addAttribute("events", this.eventService.getAllEvents());
-        return "showEvents";
+        return "listEvents";
     }
+
+    @GetMapping("/admEvents")
+    public String listAdmEvents(Model m){
+        m.addAttribute("admEvents", this.eventService.selectFalseEvents());
+        return "adminEvents";
+    }
+
+    @GetMapping("/saveAdmEvents")
+    public String saveAdmEvents(@RequestParam(name="id", required=true) int id,Model m){
+        m.addAttribute("admEvents", this.eventService.validateEvents(id));
+        return "saveAdminEvents";
+    }
+
 
     //Endpoint to show the victories of a team
     @GetMapping("/listTeamStats")
@@ -703,6 +716,8 @@ public class DataController {
         return "editProfessor";
     }
 
+
+
     private String getEditProfessorForm(int id, String formName, Model m) {
         Optional<Professor> op = this.profService.getProfessor(id);
         if (op.isPresent()) {
@@ -757,4 +772,10 @@ insert into event values(4,'',current_time,'Goal',true,1,'Marc Navarro','m');
 insert into event values(5,'',current_time,'End',true,1,'','m');
 
 insert into game values (601,2,localtimestamp(0),0,'Stanford Bridge','TBD')
+
+
+Falta autenticaçao dos utilizadores para a edição de eventos e visualização de todos os eventos. Username sairá do form mas será preciso ser autenticado antes de se inserir novo evento.
+Como fazer em relação aos jogos interrompidos: criar uma nva coluna associada ao jogo a dizer se esta interrompido ou não e inserir evento da mesma forma de sempre. Contudo apenas eventos de "resume" serão permitidos.
+
+
 */
