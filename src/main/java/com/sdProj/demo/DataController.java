@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
+
 import com.sdProj.data.Event;
 import com.sdProj.data.Team;
 import com.sdProj.data.Player;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
@@ -59,6 +63,8 @@ public class DataController {
         System.out.println("login request: " + u);
         Optional<User> authenticated = userService.authenticate(u.getusername(), u.getPassword());
         if(authenticated.isPresent()){
+            int role = userService.getRole(u.getusername());
+            setrole(role);
             return "redirect:/home";
         }else{
             return "error_page";
@@ -96,6 +102,7 @@ public class DataController {
     @GetMapping("/createData")
     public String createData() {
         return "createData";
+        
     }
 
 	@PostMapping("/saveData")
@@ -213,10 +220,15 @@ public class DataController {
 
     @GetMapping("/createEvent")
     public String createEvent(Model m) {
-        m.addAttribute("event", new Event());
-        m.addAttribute("allGames", this.gameService.getGames());
-        m.addAttribute("allPlayers", this.playerService.getAllPlayers());
-        return "editEvent";
+        int role = getrole();
+        if(role > 0){
+            m.addAttribute("event", new Event());
+            m.addAttribute("allGames", this.gameService.getGames());
+            m.addAttribute("allPlayers", this.playerService.getAllPlayers());
+            return "editEvent";
+        }else{
+            return "nopermission";
+        }
     }
 
     @GetMapping("/editEvent")
@@ -257,11 +269,17 @@ public class DataController {
 
     @PostMapping("/saveAdmEvents")
     public String saveAdmEvents(@ModelAttribute int id){
-        Optional<Event> e = this.eventService.getEvent(id);
-        if(e.isPresent()){
-            this.eventService.validateEvents(e.get().getId());
+
+        int role = getrole();
+        if(role == 2){
+            Optional<Event> e = this.eventService.getEvent(id);
+            if(e.isPresent()){
+                this.eventService.validateEvents(e.get().getId());
+            }
+            return "saveAdminEvents";
+        }else{
+            return "nopermission";
         }
-        return "saveAdminEvents";
     }
 /*
     @GetMapping("/saveAdmEvents")
@@ -385,9 +403,14 @@ public class DataController {
     
     @GetMapping("/createGame")
     public String createGame(Model m) {
-        m.addAttribute("game", new Game());
-        m.addAttribute("allTeams", this.teamService.getAllTeams());
-        return "editGame";
+        int role = getrole();
+        if(role == 2){
+            m.addAttribute("game", new Game());
+            m.addAttribute("allTeams", this.teamService.getAllTeams());
+            return "editGame";
+        }else{
+            return "nopermission";
+        }
     }
     @GetMapping("/editGame")
     public String editGame(@RequestParam(name="id", required=true) int id, Model m) {
@@ -407,6 +430,30 @@ public class DataController {
         return "redirect:/home";
     }
 
+
+    @GetMapping("/createAdmin")
+    public String createAdmin(Model m) {
+        m.addAttribute("user", new User());
+        return "editAdmin";
+    }
+    @GetMapping("/editAdmin")
+    public String editAdmin(@RequestParam(name="id", required=true) String id, Model m) {
+        Optional<User> op = this.userService.getUser(id);
+        if (op.isPresent()) {
+            m.addAttribute("user", op.get());
+            return "editAdmin";
+        }
+        else {
+            return "redirect:/home";
+        }
+    }
+    @PostMapping("/saveAdmin")
+    public String saveAdmin(@ModelAttribute User u) {
+        this.userService.addUser(u);
+        this.userService.setRole(u.getusername(), 2);
+        return "redirect:/home";
+    }    
+
     private String getEditUserForm(String id, String formName, Model m) {
         Optional<User> op = this.userService.getUser(id);
         if (op.isPresent()) {
@@ -418,8 +465,13 @@ public class DataController {
 
     @GetMapping("/createUser")
     public String createUser(Model m) {
-        m.addAttribute("user", new User());
-        return "editUser";
+        int role = getrole();
+        if(role == 2){
+            m.addAttribute("user", new User());
+            return "editUser";
+        }else{
+            return "nopermission";
+        }
     }
     @GetMapping("/editUser")
     public String editUser(@RequestParam(name="id", required=true) String id, Model m) {
@@ -436,6 +488,7 @@ public class DataController {
     @PostMapping("/saveUser")
     public String saveUser(@ModelAttribute User u) {
         this.userService.addUser(u);
+        this.userService.setRole(u.getusername(), 1);
         return "redirect:/home";
     }
     @GetMapping("/changeUser")
@@ -454,9 +507,14 @@ public class DataController {
 
     @GetMapping("/createPlayer")
     public String createPlayer(Model m) {
-        m.addAttribute("player", new Player());
-        m.addAttribute("allTeams", this.teamService.getAllTeams());
-        return "editPlayer";
+        int role = getrole();
+        if(role == 2){
+            m.addAttribute("player", new Player());
+            m.addAttribute("allTeams", this.teamService.getAllTeams());
+            return "editPlayer";
+        }else{
+            return "nopermission";
+        }
     }
     @GetMapping("/editPlayer")
     public String editPlayer(@RequestParam(name="id", required=true) String id, Model m) {
@@ -492,8 +550,13 @@ public class DataController {
 
     @GetMapping("/createTeam")
     public String createTeam(Model m) {
-        m.addAttribute("team", new Team());
-        return "editTeam";
+        int role = getrole();
+        if(role == 2){
+            m.addAttribute("team", new Team());
+            return "editTeam";
+        }else{
+            return "nopermission";
+        }
     }
     @GetMapping("/editTeam")
     public String editTeam(@RequestParam(name="id", required=true) String id, Model m) {
@@ -551,6 +614,27 @@ public class DataController {
         System.out.println(cleanedGamesEvents);
         return "currentGames";
     }
+
+
+    public void setrole( int c) {
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpSession session = attr.getRequest().getSession(true);
+        session.setAttribute("role", c);
+
+    }
+	public int getrole() {
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpSession session = attr.getRequest().getSession(true);
+        Integer role = (Integer) session.getAttribute("role");
+        int c;
+        if (role == null){
+            c = 1;
+            session.setAttribute("role", c);
+        }else{
+            c = role;
+        }
+		return c;
+	}
 
 }
     

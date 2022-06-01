@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <form th:action="@{/saveAdmEvents}" th:object="${Integer}" method="post">
+  <form th:action="@{/saveAdmEvents}" th:object="${event}" method="get">
     <head>
         <title>Validation of Events</title>
         <link rel="stylesheet" href="/team.css"/>
@@ -10,12 +10,12 @@
         <h1>Validation of Events</h1>
         <table border="1">
           <label>Eventos Inválidos no momento</label>
-            <select id="admEvents" th:field="*{admEvents}" size="10" multiple="multiple">
-				<option th:each="ad : ${admEvents}"
-						th:value="${{ad[0]}}"
-						th:text="${ad[0]} ">
-					The name
-				</option>
+          <select th:field="*{event}">
+				      <option th:each="ad : ${admEvents}"
+						          th:value="${{ad.id}}"
+						          th:text="${ad.id} ">
+					        The name
+				      </option>
 			</select>  
             <button type="submit">Register Valid Event</button>        
           </tr>
@@ -34,13 +34,13 @@
               </thead>
               <tbody class="table-hover">
           <tr th:each="ad : ${admEvents}">
-            <td class="text-left" th:text="${ad[0]}">event id</td>
-            <td class="text-left" th:text="${ad[1]}">color</td>
-            <td class="text-left" th:text="${ad[2]}">time</td>  
-            <td class="text-left" th:text="${ad[3]}">type</td>            
-            <td class="text-left" th:text="${ad[5]}">game id</td>
-            <td class="text-left" th:text="${ad[6]}">player id</td>
-            <td class="text-left" th:text="${ad[7]}">user id</td>
+            <td class="text-left" th:text="${ad.id}">event id</td>
+            <td class="text-left" th:text="${ad.color}">color</td>
+            <td class="text-left" th:text="${ad.time}">time</td>  
+            <td class="text-left" th:text="${ad.type}">type</td>            
+            <td class="text-left" th:text="${ad.game.id}">game id</td>
+            <td class="text-left" th:text="${ad.player.name}">player id</td>
+            <td class="text-left" th:text="${ad.user.username}">user id</td>
               </ul>
             </td>
           </tr>

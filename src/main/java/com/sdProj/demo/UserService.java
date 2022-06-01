@@ -32,6 +32,15 @@ public class UserService implements UserDetailsService {
         userRepository.save(u);    
     }
     
+    public void setRole(String username, int role) {
+        userRepository.setRole(username, role);
+    }
+
+
+    public Integer getRole(String username) {
+        return userRepository.getRole(username);
+    }
+
 
     public Optional<User> getUser(String id) {
         return userRepository.findById(id);

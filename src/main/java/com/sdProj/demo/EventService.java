@@ -66,7 +66,7 @@ public class EventService
         return eventRepository.insertYellowCard(gameId, player);
     }
 
-    public List<Object[]> selectFalseEvents(){
+    public List<Event> selectFalseEvents(){
         return eventRepository.selectFalseEvents();
     }
 
