@@ -426,6 +426,14 @@ public class DataController {
         return "redirect:/home";
     }
 
+    private String getEditAdminForm(String id, String formName, Model m) {
+        Optional<User> op = this.userService.getUser(id);
+        if (op.isPresent()) {
+            m.addAttribute("admin", op.get());
+            return formName;
+        }
+        return "redirect:/home";
+    }
 
     @GetMapping("/createAdmin")
     public String createAdmin(Model m) {
@@ -449,6 +457,10 @@ public class DataController {
         this.userService.setRole(u.getUsername(), 2);
         return "redirect:/home";
     }    
+    @GetMapping("/changeAdmin")
+    public String getAdminForm(@RequestParam(name="id", required=true) String id, Model m) {
+        return getEditAdminForm(id, "editAdmin", m);
+    }
 
     private String getEditUserForm(String id, String formName, Model m) {
         Optional<User> op = this.userService.getUser(id);
