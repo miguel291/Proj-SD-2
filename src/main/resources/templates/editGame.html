@@ -18,7 +18,7 @@
             <label>Team A</label>
             <select th:field="*{Teams}">
 				<option th:each="ts : ${allTeams}"
-						th:value="${{ts}}"
+						th:value="${{ts.name}}"
 						th:text="${ts.name}">
 					The name
 				</option>
@@ -26,13 +26,13 @@
             <label>Team B</label>
             <select th:field="*{Teams}">
 				<option th:each="ts : ${allTeams}"
-						th:value="${{ts}}"
+						th:value="${{ts.name}}"
 						th:text="${ts.name}">
 					The name
 				</option>
 			</select>
         </div>
-        <button type="submit">Player Team</button>
+        <button type="submit">Create Game</button>
     </div>
 </form>
 

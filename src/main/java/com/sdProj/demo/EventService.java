@@ -35,7 +35,7 @@ public class EventService
         Timestamp time = new Timestamp(System.currentTimeMillis());
         event.setTime(time);
         event.setValid(false);
-        event.setType("card");
+        event.setType("Card");
         eventRepository.save(event);    
         //Função update cartões amarelos: dá erro uma vez que não existem jogos ativos no currentGames
         //eventRepository.insertYellowCard(event.getGame().getId(), event.getPlayer().getName());
@@ -49,7 +49,7 @@ public class EventService
         event.setTime(time);
         event.setValid(false);
         event.setColor("None");
-        event.setType("goal");
+        event.setType("Goal");
         eventRepository.save(event);    
         
     }
@@ -60,9 +60,9 @@ public class EventService
         Timestamp time = new Timestamp(System.currentTimeMillis());
         event.setTime(time);
         event.setValid(false);
-        event.setColor("None");
+        event.setColor("");
         //event.getPlayer().setName("None");
-        event.setType("interruption");
+        event.setType("Interruption");
         eventRepository.save(event);    
     }
 
