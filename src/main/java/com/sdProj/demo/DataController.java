@@ -624,7 +624,7 @@ public class DataController {
         Integer role = (Integer) session.getAttribute("role");
         int c;
         if (role == null){
-            c = 1;
+            c = 0;
             session.setAttribute("role", c);
         }else{
             c = role;
