@@ -1,6 +1,7 @@
 package com.sdProj.demo;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -77,8 +78,8 @@ public class EventService
         return eventRepository.goalsStatsPerPlayer();
     }
 
-    public List<Integer> getCountCards(Team t1, Team t2, String cardColor) {
-        System.out.println(eventRepository.getTeamCards(t1.getName(), t2.getName(), cardColor));
+    public List<List<Object>> getCountCards(Team t1, Team t2, String cardColor) {
+        //System.out.println(eventRepository.getTeamCards(t1.getName(), t2.getName(), cardColor));
         return eventRepository.getTeamCards(t1.getName(), t2.getName(), cardColor);
     }
 

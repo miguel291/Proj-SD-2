@@ -1,6 +1,7 @@
 package com.sdProj.demo;
 
 import java.lang.reflect.Field;
+import java.math.BigInteger;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -395,9 +396,7 @@ public class DataController {
             System.out.println(t.getName() + " vs " + s.getName());
             System.out.println(this.gameService.getGamesIds(t, s));
             System.out.println(this.gameService.getGoalsAndLocation(t, s));
-            int t_win, t_lose, t_draw, s_win, s_lose, s_draw,t_goals,s_goals;
             int[][] results = new int[2][4];
-            t_win = t_lose = t_draw = s_win = s_lose = s_draw = t_goals = s_goals = 0;
             //home_goals, away_goals, location
             for(List<Object> o : this.gameService.getGoalsAndLocation(t, s)){
                 if(o.get(2).equals(t.getStadium())){
@@ -433,11 +432,10 @@ public class DataController {
                     }
                 }
             }
-            List<Integer> yellowCards = this.eventService.getCountCards(t, s,"Yellow");
-            for(int i = 0; i < yellowCards.size(); i++){
-                System.out.println(yellowCards.get(i));
-            }
-            List<Integer> redCards = this.eventService.getCountCards(t, s,"Red");
+           /* for(int i = 0; i < yellowCards.size(); i++){
+                System.out.println(yellowCards.get(i).get(0)+ " " + yellowCards.get(i).get(1));
+            }*/
+            /*List<Object> redCards = this.eventService.getCountCards(t, s,"Red");
             for(int i = 0; i < redCards.size(); i++){
                 System.out.println(redCards.get(i));
             }
@@ -450,17 +448,39 @@ public class DataController {
             if(yellowCards.size() != 2){
                 yellowCards.add(0);
                 yellowCards.add(0);
-            }
-            System.out.println("Red: " + redCards.size() +  " \nYellow: " + yellowCards.size());
+            }*/
             List<String> teamNames = new ArrayList<>();
             teamNames.add(t.getName());
             teamNames.add(s.getName());
+            int[] red = {0,0}; 
+            int [] yellow = {0,0};
+            List<List<Object>> yellowCards = this.eventService.getCountCards(t, s,"Yellow");
+            for (List<Object> o : yellowCards){
+                System.out.println("Yellow: " + o.get(0) + " " + o.get(1));
+                if(o.get(0).equals(t.getName())){
+                    yellow[0] += ((BigInteger) o.get(1)).intValue();
+                }
+                else if (o.get(0).equals(s.getName())){
+                    yellow[1] += ((BigInteger) o.get(1)).intValue();
+                }
+            }
+            List<List<Object>> redCards = this.eventService.getCountCards(t, s,"Red");
+            for (List<Object> o : redCards){
+                System.out.println("Red: " + o.get(0) + " " + o.get(1));
+                if(o.get(0).equals(t.getName())){
+                    red[0] += ((BigInteger) o.get(1)).intValue();
+                }
+                else if (o.get(0).equals(s.getName())){
+                    red[1] += ((BigInteger) o.get(1)).intValue();
+                }
+            }
+            
             System.out.println("Results[]:" + results[0][0] + " " + results[0][1] + " " + results[0][2] + " " + results[0][3] + " " + results[1][0] + " " + results[1][1] + " " + results[1][2] + " " + results[1][3]);
             //System.out.println("Results[]:" + t_win + " " + t_lose + " " + t_draw + " " + s_win + " " + s_lose + " " + s_draw + " " + t_goals + " " + s_goals);
-            m.addAttribute("yellowCards", yellowCards);
+            m.addAttribute("yellowCards", yellow);
             String[] logo = {t.getLogo(), s.getLogo()};
             m.addAttribute("logo", logo);
-            m.addAttribute("redCards", redCards);
+            m.addAttribute("redCards", red);
             m.addAttribute("teamNames", teamNames);
             m.addAttribute("results", results);
             //System.out.println(yellowCards.get(0) + " " + yellowCards.get(1) + " " + redCards.get(0) + " " + redCards.get(1));

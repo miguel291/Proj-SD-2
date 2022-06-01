@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Map;
 
 import com.sdProj.data.Event;
 
@@ -18,8 +19,8 @@ public interface EventRepository extends CrudRepository<Event, Integer>
     public List<Object[]> goalsStatsPerPlayer();
 
     //Get id of players who received cards in games betweem two teams
-    @Query(value = "select count(*) from event join player on event.player_id = player.name where game_id in  (select games_id from game_teams where teams_name like %?1 and games_id in (select games_id from game_teams where teams_name like %?2)) and color like %?3 and valid is true group by player.team_name", nativeQuery = true)
-    public List<Integer> getTeamCards(String teamName1, String teamName2, String cardColor);
+    @Query(value = "select  player.team_name,count(*) from event join player on event.player_id = player.name where game_id in  (select games_id from game_teams where teams_name like %?1 and games_id in (select games_id from game_teams where teams_name like %?2)) and color like %?3 and valid is true group by player.team_name", nativeQuery = true)
+    public List<List<Object>> getTeamCards(String teamName1, String teamName2, String cardColor);
 
     //Get events of game with id    
     @Query(value = "select * from event where game_id = ?1 and valid is true", nativeQuery = true)
