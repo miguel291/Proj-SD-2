@@ -263,22 +263,19 @@ public class DataController {
 
     @GetMapping("/admEvents")
     public String listAdmEvents(Model m){
-        m.addAttribute("admEvents", this.eventService.selectFalseEvents());
-        return "adminEvents";
+        int role = getrole();
+        if(role == 2){
+            m.addAttribute("admEvents", this.eventService.selectFalseEvents());
+            return "adminEvents";
+        }else{
+            return "nopermission";
+        }
     }
 
     @PostMapping("/saveAdmEvents")
     public String saveAdmEvents(@ModelAttribute Event e){
-        System.out.println("ID: " + e.getId());
-        int role = getrole();
-        if(role == 2){
-
-            this.eventService.validateEvents(e.getId());
-            
-            return "redirect:/home";
-        }else{
-            return "nopermission";
-        }
+        this.eventService.validateEvents(e.getId());
+        return "redirect:/home";
     }
 /* 
     @GetMapping("/saveAdmEvents")
