@@ -16,7 +16,7 @@
               <th class="text-center">Team 1</th>
               <th class="text-left">Team 2</th>
               <th class="text-left">Result</th>
-              <th class="text-left">Date</th>
+              <th class="text-left">Time Elapsed</th>
               <th class="text-left">Location</th>
               <th class="text-left">Events</th>
             </tr>
@@ -28,10 +28,8 @@
             <td class="text-left" th:text="${g.get(2)}">result</td>
             <td class="text-left" th:text="${g.get(3)}">date</td>
             <td class="text-left" th:text="${g.get(4)}">location</td>
-            <td class="text-left" th:text="${events}">event</td>
-            <div  th:each="e, stat : ${events[gStat.index]}">
-                <td class="text-left" th:text="${e}">date</td>
-            </div>
+            <td class="text-left" th:text="${events.get(gStat.index)}">events</td>
+            
               </ul>
             </td>
           </tr>
@@ -39,3 +37,5 @@
       
     </body>
 </html>
+
+

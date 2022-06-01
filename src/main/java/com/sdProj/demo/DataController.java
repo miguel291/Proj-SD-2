@@ -445,23 +445,6 @@ public class DataController {
                     }
                 }
             }
-           /* for(int i = 0; i < yellowCards.size(); i++){
-                System.out.println(yellowCards.get(i).get(0)+ " " + yellowCards.get(i).get(1));
-            }*/
-            /*List<Object> redCards = this.eventService.getCountCards(t, s,"Red");
-            for(int i = 0; i < redCards.size(); i++){
-                System.out.println(redCards.get(i));
-            }
-            System.out.println("Red: " + redCards.size() +  " \nYellow: " + yellowCards.size());
-            if(redCards.size() != 2){
-                redCards.add(0);
-                redCards.add(0);
-            }
-            System.out.println("Red: " + redCards.size() +  " \nYellow: " + yellowCards.size());
-            if(yellowCards.size() != 2){
-                yellowCards.add(0);
-                yellowCards.add(0);
-            }*/
             List<String> teamNames = new ArrayList<>();
             teamNames.add(t.getName());
             teamNames.add(s.getName());
@@ -489,7 +472,6 @@ public class DataController {
             }
             
             System.out.println("Results[]:" + results[0][0] + " " + results[0][1] + " " + results[0][2] + " " + results[0][3] + " " + results[1][0] + " " + results[1][1] + " " + results[1][2] + " " + results[1][3]);
-            //System.out.println("Results[]:" + t_win + " " + t_lose + " " + t_draw + " " + s_win + " " + s_lose + " " + s_draw + " " + t_goals + " " + s_goals);
             m.addAttribute("yellowCards", yellow);
             String[] logo = {t.getLogo(), s.getLogo()};
             m.addAttribute("logo", logo);
@@ -652,7 +634,6 @@ public class DataController {
     public String currentGames(Model model) {
         List<List<Object>> currentGamessData = this.gameService.getCurrentGames();
         List<List<Object>> cleanedGamesData = new ArrayList();
-        List<List<Object>> currentGamesEvents = new ArrayList();
         List<List<List<Object>>> cleanedGamesEvents = new ArrayList();
         //this.eventService.getEventsByGameId(id);
         for(int i = 0; i < currentGamessData.size(); i++){
@@ -660,9 +641,7 @@ public class DataController {
         }
         for(int i = 0; i < currentGamessData.size(); i++){
             List<Object> temp = new ArrayList<>();
-            currentGamesEvents = this.eventService.getEventsByGameId((int) currentGamessData.get(i).get(2));
-            cleanedGamesEvents.add(currentGamesEvents);
-            currentGamesEvents.clear();
+            cleanedGamesEvents.add(this.eventService.getEventsByGameId((int) currentGamessData.get(i).get(2)));
             if(currentGamessData.get(i).get(0).equals(currentGamessData.get(i).get(6))){
                 temp.add(currentGamessData.get(i).get(1));
                 temp.add(currentGamessData.get(i+1).get(1));
@@ -679,8 +658,8 @@ public class DataController {
             System.out.println(temp.get(0) + " " + temp.get(1) + " " + temp.get(2) + " " + temp.get(3) + " " + temp.get(4)); 
         }
         model.addAttribute("games", cleanedGamesData);
-        model.addAttribute("events", currentGamesEvents);
-        System.out.println(currentGamesEvents);
+        model.addAttribute("events", cleanedGamesEvents);
+        System.out.println(cleanedGamesEvents);
         return "currentGames";
     }
 

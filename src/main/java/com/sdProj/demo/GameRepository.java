@@ -18,7 +18,7 @@ public interface GameRepository extends CrudRepository<Game, Integer>
     public List<List<Object>> getGoalsAndLocation(String teamName1, String teamName2);
 
     //Get data from games happening now
-    @Query(value = "select stadium,name,id,home_goals,away_goals,date_trunc('second', game_date),location from game join game_teams on game.id = game_teams.games_id join team on teams_name = name where game_date BETWEEN NOW() - INTERVAL '2 HOURS' AND NOW() order by id", nativeQuery = true)
+    @Query(value = "select stadium,name,id,home_goals,away_goals,cast(date_trunc('second', current_timestamp-game_date) as time) as time,location from game join game_teams on game.id = game_teams.games_id join team on teams_name = name where game_date BETWEEN NOW() - INTERVAL '2 HOURS' AND NOW() order by id", nativeQuery = true)
     public List<List<Object>> getCurrentGames();
 
     @Query(value = "select id from game where game_date BETWEEN NOW() - INTERVAL '2 HOURS' AND NOW() ", nativeQuery = true)

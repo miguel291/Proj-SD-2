@@ -23,7 +23,7 @@ public interface EventRepository extends CrudRepository<Event, Integer>
     public List<List<Object>> getTeamCards(String teamName1, String teamName2, String cardColor);
 
     //Get events of game with id    
-    @Query(value = "select * from event where game_id = ?1 and valid is true", nativeQuery = true)
+    @Query(value = "select id,color,date_trunc('second', time),type,player_id from event where game_id = ?1 and valid is true", nativeQuery = true)
     public List<List<Object>> getEventsByGameId(int gameId);
 
 
