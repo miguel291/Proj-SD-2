@@ -9,7 +9,13 @@
     <body>
         <h1>Validation of Events</h1>
         <label>Eventos Inválidos no momento</label>
-        <input type="text" name="id" th:value="${id}">
+        <select field="*{id}">
+              <option th:each="ad : ${admEvents}"
+                          th:value="${{ad}}"
+                          th:text="${ad.id} ">
+                    The name
+              </option>
+        </select>
         <button type="submit">Register Valid Event</button>        
         </tr>
         <table class="table-fill">
