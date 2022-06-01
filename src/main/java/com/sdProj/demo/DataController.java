@@ -262,33 +262,14 @@ public class DataController {
     }
 
     @GetMapping("/admEvents")
-    public String listAdmEvents(Model m) {
-        int role = getrole();
-        if(role == 2){
-            m.addAttribute("event", new Event());
-            m.addAttribute("admEvents", this.eventService.selectFalseEvents());
-            return "adminEvents";
-        }else{
-            return "nopermission";
-        }
+    public String listAdmEvents(Model m){
+        m.addAttribute("admEvents", this.eventService.selectFalseEvents());
+        return "adminEvents";
     }
-
-    @GetMapping("/adminEvents")
-    public String adminEvents(@RequestParam(name="id", required=true) int id, Model m) {
-        System.out.println("lol");
-        Optional<Event> op = this.eventService.getEvent(id);
-        if (op.isPresent()) {
-            m.addAttribute("event", op.get());
-            return "adminEvents";
-        }
-        else {
-            return "redirect:/home";
-        }
-    }  
 
     @PostMapping("/saveAdmEvents")
     public String saveAdmEvents(@ModelAttribute Event e){
-        System.out.println("e : "+e);
+        System.out.println("ID: " + e.getId());
         int role = getrole();
         if(role == 2){
 
@@ -299,9 +280,6 @@ public class DataController {
             return "nopermission";
         }
     }
-
-
-
 /* 
     @GetMapping("/saveAdmEvents")
     public String saveAdmEvents(@RequestParam(name="id", required=true) int id,Model m){

@@ -71,13 +71,7 @@ public class EventService
     }
 
     public void validateEvents(int id){
-        Optional<Event> e  = eventRepository.findById(id);
-        if(e.isPresent()){
-            e.get().setValid(true);
-        }else{
-            System.out.println("ID :" + id);
-        }
-        //eventRepository.validateEvents(id);
+        eventRepository.validateEvents(id);
 
     }
 
