@@ -17,7 +17,8 @@ public class User {
     private String username; 
     private long phone;
     @Column(nullable = false)
-    private String name, password, role;
+    private String name, password;
+    private int role;
     @OneToMany(
         targetEntity=com.sdProj.data.Event.class, 
         cascade=CascadeType.ALL,
@@ -27,7 +28,7 @@ public class User {
     public User() {
     }
 
-    public User(int id, long phone, String name, String username, String password, String role) {
+    public User(int id, long phone, String name, String username, String password, Integer role) {
         this.phone = phone;
         this.name = name;
         this.username = username;
@@ -67,11 +68,11 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
+    public Integer getRole() {
         return this.role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Integer role) {
         this.role = role;
     }
 

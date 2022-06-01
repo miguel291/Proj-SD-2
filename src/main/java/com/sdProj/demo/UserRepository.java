@@ -12,4 +12,10 @@ public interface UserRepository extends CrudRepository<User, String>   {
 
     @Query(value = "select * from users where username = ?1 and password = ?2", nativeQuery = true)
     Optional<User> auth(String username, String password);
+
+    @Query(value = "select role from users where username = ?1", nativeQuery = true)
+    Integer getRole(String username);
+    
+    @Query(value = "update users set role = ?2 where username = ?1", nativeQuery = true)
+    void setRole(String username, int role);
  } 
