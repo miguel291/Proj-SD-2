@@ -52,11 +52,11 @@ public class User {
         this.name = name;
     }
 
-    public String getusername() {
+    public String getUsername() {
         return this.username;
     }
 
-    public void setusername(String username) {
+    public void setUsername(String username) {
         this.username = username;
     }
 
@@ -87,7 +87,7 @@ public class User {
     }
 
     public User username(String username) {
-        setusername(username);
+        setUsername(username);
         return this;
     }
 
@@ -109,7 +109,7 @@ public class User {
         return "{" +
             ", phone='" + getPhone() + "'" +
             ", name='" + getName() + "'" +
-            ", username='" + getusername() + "'" +
+            ", username='" + getUsername() + "'" +
             ", password='" + getPassword() + "'" +
             ", admin='" + getRole() + "'" +
             "}";

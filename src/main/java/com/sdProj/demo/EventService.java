@@ -70,8 +70,15 @@ public class EventService
         return eventRepository.selectFalseEvents();
     }
 
-    public List<Object[]> validateEvents(int id){
-        return eventRepository.validateEvents(id);
+    public void validateEvents(int id){
+        Optional<Event> e  = eventRepository.findById(id);
+        if(e.isPresent()){
+            e.get().setValid(true);
+        }else{
+            System.out.println("ID :" + id);
+        }
+        //eventRepository.validateEvents(id);
+
     }
 
     /*public List<List<Object>> insertInt(){
