@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <form th:action="@{/saveAdmEvents}" th:object="${event}" method="get">
+  <form th:action="@{/saveAdmEvents}" th:object="${event}" method="post">
     <head>
         <title>Validation of Events</title>
         <link rel="stylesheet" href="/team.css"/>
@@ -10,13 +10,13 @@
         <h1>Validation of Events</h1>
         <table border="1">
           <label>Eventos Inválidos no momento</label>
-          <select th:field="*{event}">
+          <select field="*{event}">
 				      <option th:each="ad : ${admEvents}"
-						          th:value="${{ad.id}}"
+						          th:value="${{ad}}"
 						          th:text="${ad.id} ">
 					        The name
 				      </option>
-			</select>  
+			    </select>  
             <button type="submit">Register Valid Event</button>        
           </tr>
         </table>

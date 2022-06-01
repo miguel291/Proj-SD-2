@@ -61,9 +61,9 @@ public class DataController {
     @PostMapping("/login")
     public String login (@ModelAttribute User u) {
         System.out.println("login request: " + u);
-        Optional<User> authenticated = userService.authenticate(u.getusername(), u.getPassword());
+        Optional<User> authenticated = userService.authenticate(u.getUsername(), u.getPassword());
         if(authenticated.isPresent()){
-            int role = userService.getRole(u.getusername());
+            int role = userService.getRole(u.getUsername());
             setrole(role);
             return "redirect:/home";
         }else{
@@ -262,26 +262,47 @@ public class DataController {
     }
 
     @GetMapping("/admEvents")
-    public String listAdmEvents(Model m){
-        m.addAttribute("admEvents", this.eventService.selectFalseEvents());
-        return "adminEvents";
-    }
-
-    @PostMapping("/saveAdmEvents")
-    public String saveAdmEvents(@ModelAttribute int id){
-
+    public String listAdmEvents(Model m) {
         int role = getrole();
         if(role == 2){
-            Optional<Event> e = this.eventService.getEvent(id);
-            if(e.isPresent()){
-                this.eventService.validateEvents(e.get().getId());
-            }
-            return "saveAdminEvents";
+            m.addAttribute("event", new Event());
+            m.addAttribute("admEvents", this.eventService.selectFalseEvents());
+            return "adminEvents";
         }else{
             return "nopermission";
         }
     }
-/*
+
+    @GetMapping("/adminEvents")
+    public String adminEvents(@RequestParam(name="id", required=true) int id, Model m) {
+        System.out.println("lol");
+        Optional<Event> op = this.eventService.getEvent(id);
+        if (op.isPresent()) {
+            m.addAttribute("event", op.get());
+            return "adminEvents";
+        }
+        else {
+            return "redirect:/home";
+        }
+    }  
+
+    @PostMapping("/saveAdmEvents")
+    public String saveAdmEvents(@ModelAttribute Event e){
+        System.out.println("e : "+e);
+        int role = getrole();
+        if(role == 2){
+
+            this.eventService.validateEvents(e.getId());
+            
+            return "redirect:/home";
+        }else{
+            return "nopermission";
+        }
+    }
+
+
+
+/* 
     @GetMapping("/saveAdmEvents")
     public String saveAdmEvents(@RequestParam(name="id", required=true) int id,Model m){
         m.addAttribute("admEvents", this.eventService.validateEvents(id));
@@ -450,7 +471,7 @@ public class DataController {
     @PostMapping("/saveAdmin")
     public String saveAdmin(@ModelAttribute User u) {
         this.userService.addUser(u);
-        this.userService.setRole(u.getusername(), 2);
+        this.userService.setRole(u.getUsername(), 2);
         return "redirect:/home";
     }    
 
@@ -488,7 +509,7 @@ public class DataController {
     @PostMapping("/saveUser")
     public String saveUser(@ModelAttribute User u) {
         this.userService.addUser(u);
-        this.userService.setRole(u.getusername(), 1);
+        this.userService.setRole(u.getUsername(), 1);
         return "redirect:/home";
     }
     @GetMapping("/changeUser")

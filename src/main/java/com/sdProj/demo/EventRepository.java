@@ -1,10 +1,13 @@
 package com.sdProj.demo;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 import java.util.Map;
+
+import javax.transaction.Transactional;
 
 import com.sdProj.data.Event;
 
@@ -34,8 +37,10 @@ public interface EventRepository extends CrudRepository<Event, Integer>
     @Query(value="select * from event join game on event.game_id = game.id where game.game_date BETWEEN NOW() - INTERVAL '2 HOURS' AND NOW() order by event.time", nativeQuery = true)
     public List<Event> selectFalseEvents();
     
-    @Query(value="update event set (valid='true') where game_id=%?1", nativeQuery = true)
-    public List<Object[]> validateEvents(int id);
+    @Modifying
+    @org.springframework.transaction.annotation.Transactional
+    @Query(value="update event set valid = true where game_id= ?1", nativeQuery = true)
+    public void validateEvents(int id);
     
 
 } 
