@@ -1,24 +1,17 @@
 package com.sdProj.demo;
 
-import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import com.sdProj.data.Event;
 import com.sdProj.data.Team;
 import com.sdProj.data.Player;
-import com.sdProj.data.Professor;
 import com.sdProj.data.User;
 import com.sdProj.data.Game;
-import com.sdProj.data.Student;
-import com.sdProj.formdata.FormData;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +27,6 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -46,12 +38,6 @@ public class DataController {
     HttpResponse <JsonNode> response;
     HttpResponse <JsonNode> response2;
     HttpResponse <JsonNode> response3;
-
-    @Autowired
-    StudentService studentService;
-
-    @Autowired
-    ProfService profService;
 
     @Autowired
     GameService gameService;
@@ -140,18 +126,6 @@ public class DataController {
             System.out.println("Error getting data from API");
         }
 
-         //Print returned data in console
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        JsonParser jp = new JsonParser();
-        JsonElement je = jp.parse(response3.getBody().toString());
-        String prettyJsonString = gson.toJson(je);
-        //System.out.println(prettyJsonString + '\n');
-        je = jp.parse(response2.getBody().toString());
-        prettyJsonString = gson.toJson(je);
-        //System.out.println(prettyJsonString + '\n');
-        //System.out.println(response.getStatus());
-        //System.out.println(response.getHeaders().get("Content-Type"));
-
         //Parse returned data to team objects   
         JSONObject content = response.getBody().getObject();
         JSONArray r = content.getJSONArray("response");
@@ -174,20 +148,15 @@ public class DataController {
             if(t == null){
                 continue;
             }
-            //System.out.println("Team: " + t.getName());
             content = r.getJSONObject(i).getJSONObject("player");
-            //System.out.println(t.getName()+'\n');
-            //System.out.println(r.getJSONObject(i).getString("name") + " " + r.getJSONObject(i).getString("position") +"\n");
             java.sql.Date sqlDateOfBirth;
             try {
                 sqlDateOfBirth = java.sql.Date.valueOf(content.getJSONObject("birth").getString("date"));
             } catch (Exception e) {
                 //TODO: handle exception
                 System.out.println("Player  " + content.getString("name") + " with no date of birth");
-                //sqlDateOfBirth = java.sql.Date.valueOf("1970-01-01");
                 sqlDateOfBirth = null;
             }
-            //System.out.println(sqlDateOfBirth);
             Player a = new Player(
                 content.getString("name"),
                 content.getString("photo"),
@@ -198,7 +167,6 @@ public class DataController {
             this.playerService.addPlayer(a);   
             //System.out.println(a.getName() + " " + a.getPosition() + " " + a.getTeam().getName() + "\n");
         }
-
 
         //Parse returned data to game objects
         content = response3.getBody().getObject();
@@ -213,11 +181,7 @@ public class DataController {
             if(t1 == null || t2 == null){
                 continue;
             }
-            //System.out.println(t1.getName() + " - " + t2.getName());
-
             String winner;
-            //System.out.println(t1.getName() + " vs " + t2.getName() + "\n");
-            //System.out.println(r.getJSONObject(i).getString("date") + " " + r.getJSONObject(i).getString("status") +"\n");
             if(r.getJSONObject(i).getJSONObject("goals").getInt("home") < r.getJSONObject(i).getJSONObject("goals").getInt("away"))
                 winner = t2.getName();
             else if(r.getJSONObject(i).getJSONObject("goals").getInt("home") > r.getJSONObject(i).getJSONObject("goals").getInt("away"))
@@ -227,7 +191,6 @@ public class DataController {
              
             Instant instant = Instant.parse( r.getJSONObject(i).getJSONObject("fixture").getString("date"));
             java.sql.Timestamp sqlDate = java.sql.Timestamp.from(instant);
-             //java.sql.Timestamp sqlDate = java.sql.Timestamp.valueOf(r.getJSONObject(i).getJSONObject("fixture").getString("date"));
             Game a = new Game(
                 r.getJSONObject(i).getJSONObject("fixture").getJSONObject("venue").getString("name"),
                 sqlDate,
@@ -240,23 +203,8 @@ public class DataController {
         }
 		return "redirect:/home";
 	}
-
-    @GetMapping("/listStudents")
-    public String listStudents(Model model) {
-        model.addAttribute("students", this.studentService.getAllStudents());
-        return "listStudents";
-    }
-
-
-
-    @GetMapping("/createStudent")
-    public String createStudent(Model m) {
-        m.addAttribute("student", new Student());
-        m.addAttribute("allProfessors", this.profService.getAllProfessors());
-        return "editStudent";
-    }
-
-    // modelo - eventos
+    
+  // modelo - eventos
     @GetMapping("/listEvents")
     public String listEvents(Model model) {
         model.addAttribute("events", this.eventService.getAllEvents());
@@ -290,91 +238,6 @@ public class DataController {
         this.eventService.addEvent(event);
         return "redirect:/listEvents";
     }
-
-    // end modelo
-
-    // Goal Event
-    @GetMapping("/createEventGoal")
-    public String createEventGoal(Model m) {
-        m.addAttribute("event", new Event());
-        m.addAttribute("allGames", this.gameService.getGames());
-        m.addAttribute("allPlayers", this.playerService.getAllPlayers());
-        return "editEventGoal";
-    }
-
-    @GetMapping("/editEventGoal")
-    public String editEventGoal(@RequestParam(name="id", required=true) int id, Model m) {
-        Optional<Event> op = this.eventService.getEvent(id);
-        if (op.isPresent()) {
-            m.addAttribute("event", op.get());
-            m.addAttribute("allGames", this.gameService.getGames());
-            m.addAttribute("allPlayers", this.playerService.getAllPlayers());
-            return "editEventGoal";
-        }
-        else {
-            return "redirect:/listEvents";
-        }
-    }    
-
-    @PostMapping("/saveEventGoal")
-    public String saveEventGoal(@ModelAttribute Event event) {
-        this.eventService.addEventGoal(event);
-        return "redirect:/listEvents";
-    }
-
-    // Interruption Event
-    @GetMapping("/createEventInt")
-    public String createEventInt(Model m){
-        m.addAttribute("event", new Event());
-        m.addAttribute("allGames", this.gameService.getGames());
-        return "editEventInt";
-    }
-
-    @GetMapping("/editEventInt")
-    public String editEventInt(@RequestParam(name="id", required=true) int id, Model m) {
-        Optional<Event> op = this.eventService.getEvent(id);
-        if (op.isPresent()) {
-            m.addAttribute("event", op.get());
-            m.addAttribute("allGames", this.gameService.getGames());
-            return "editEventInt";
-        }
-        else {
-            return "redirect:/home";
-        }
-    }    
-
-    @PostMapping("/saveEventInt")
-    public String saveEventInt(@ModelAttribute Event event) {
-        this.eventService.addEventInt(event);
-        return "redirect:/home";
-    }
-
-     // Resume Event
-     @GetMapping("/createEventRes")
-     public String createEventRes(Model m){
-         m.addAttribute("event", new Event());
-         m.addAttribute("allGames", this.gameService.getGames());
-         return "editEventRes";
-     }
- 
-     @GetMapping("/editEventRes")
-     public String editEventRes(@RequestParam(name="id", required=true) int id, Model m) {
-         Optional<Event> op = this.eventService.getEvent(id);
-         if (op.isPresent()) {
-             m.addAttribute("event", op.get());
-             m.addAttribute("allGames", this.gameService.getGames());
-             return "editEventRes";
-         }
-         else {
-             return "redirect:/home";
-         }
-     }    
- 
-     @PostMapping("/saveEventRes")
-     public String saveEventRes(@ModelAttribute Event event) {
-         this.eventService.addEventRes(event);
-         return "redirect:/home";
-     }
 
     // Show all events
     @GetMapping("/showEvents")
@@ -426,19 +289,6 @@ public class DataController {
         }
         return "listTeamStats";
     }
-
-    @GetMapping("/editStudent")
-    public String editStudent(@RequestParam(name="id", required=true) int id, Model m) {
-        Optional<Student> op = this.studentService.getStudent(id);
-        if (op.isPresent()) {
-            m.addAttribute("student", op.get());
-            m.addAttribute("allProfessors", this.profService.getAllProfessors());
-            return "editStudent";
-        }
-        else {
-            return "redirect:/listStudents";
-        }
-    }    
 
     @GetMapping("/teamDuel/{id1}/{id2}")
     public String teamDuel(@PathVariable("id1") String id, @PathVariable("id2") String id2, Model m) {
@@ -702,73 +552,8 @@ public class DataController {
         return "currentGames";
     }
 
-    @PostMapping("/saveStudent")
-    public String saveStudent(@ModelAttribute Student st) {
-        this.studentService.addStudent(st);
-        return "redirect:/listStudents";
-    }
-
-    @GetMapping("/queryStudents")
-    public String queryStudent1(Model m) {
-        m.addAttribute("person", new FormData());
-        return "queryStudents";
-    }
-
-    /* Note the invocation of a service method that is served by a query in jpql */
-    @GetMapping("/queryResults[]")
-    public String queryResult1(@ModelAttribute FormData data, Model m) {
-        List<Student> ls = this.studentService.findByNameEndsWith(data.getName());
-        m.addAttribute("students", ls);
-        return "listStudents";
-    }
-
-    @GetMapping("/listProfessors")
-    public String listProfs(Model model) {
-        model.addAttribute("professors", this.profService.getAllProfessors());
-        return "listProfessors";
-    }
-
-    @GetMapping("/createProfessor")
-    public String createProfessor(Model m) {
-        m.addAttribute("professor", new Professor());
-        return "editProfessor";
-    }
-
-
-
-    private String getEditProfessorForm(int id, String formName, Model m) {
-        Optional<Professor> op = this.profService.getProfessor(id);
-        if (op.isPresent()) {
-            m.addAttribute("professor", op.get());
-            return formName;
-        }
-        return "redirect:/listProfessors";
-    }
-
-    @GetMapping("/editProfessor")
-    public String editProfessor(@RequestParam(name="id", required=true) int id, Model m) {
-        return getEditProfessorForm(id, "editProfessor", m);
-    }    
-
-    @PostMapping("/saveProfessor")
-    public String saveProfessor(@ModelAttribute Professor prof) {
-        this.profService.addProfessor(prof);
-        return "redirect:/listProfessors";
-    }
-
-    /* For the sake of illustrating the use of @Transactional */
-    @GetMapping("/changeOffice")
-    public String getOfficeForm(@RequestParam(name="id", required=true) int id, Model m) {
-        return getEditProfessorForm(id, "editProfessorOffice", m);
-    }
-
-    @PostMapping("/sumbitOfficeChange")
-    public String changeOffice(@ModelAttribute Professor prof) {
-        this.profService.changeProfOffice(prof.getId(), prof.getOffice());
-        return "redirect:/listProfessors";
-    }
-
 }
+    
 
 /*
 select home_goals,away_goals,location, game_date from game WHERE   game_date >= NOW() - '2 hour'::INTERVAL

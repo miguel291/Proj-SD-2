@@ -15,7 +15,7 @@ public interface TeamRepository extends CrudRepository<Team, String>   {
     public int getWins(String name); 
 
     //Victories, Defeats, Played Matches
-    @Query(value = "select stat from( select 1 OrderNo,count(id) as stat from game where id in (select games_id from game_teams where teams_name like %?1) and winner like %?1 UNION select 2 OrderNo,count(id) as stat from game where id in (select games_id from game_teams where teams_name like %?1) and winner not like %?1 and winner not like 'Draw' UNION select 3 OrderNo,count(id) as stat from game where id in (select games_id from game_teams where teams_name like %?1) ) as foo order by OrderNo", nativeQuery = true)
+    @Query(value = "select stat from( select 1 OrderNo,count(id) as stat from game where id in (select games_id from game_teams where teams_name like %?1) and winner like %?1 UNION select 2 OrderNo,count(id) as stat from game where id in (select games_id from game_teams where teams_name like %?1) and winner not like %?1 and winner not like 'Draw' and winner not like 'TBD' UNION select 3 OrderNo,count(id) as stat from game where id in (select games_id from game_teams where teams_name like %?1) ) as foo order by OrderNo", nativeQuery = true)
     public List<Integer> getTeamResults(String name);
 
 } 

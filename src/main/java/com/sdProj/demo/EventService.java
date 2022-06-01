@@ -35,47 +35,10 @@ public class EventService
         Timestamp time = new Timestamp(System.currentTimeMillis());
         event.setTime(time);
         event.setValid(false);
-        event.setType("Card");
         eventRepository.save(event);    
         //Função update cartões amarelos: dá erro uma vez que não existem jogos ativos no currentGames
         //eventRepository.insertYellowCard(event.getGame().getId(), event.getPlayer().getName());
         
-    }
-
-    public void addEventGoal(Event event)  
-    {   
-        //System.out.println(prof);
-        Timestamp time = new Timestamp(System.currentTimeMillis());
-        event.setTime(time);
-        event.setValid(false);
-        event.setColor("None");
-        event.setType("Goal");
-        eventRepository.save(event);    
-        
-    }
-
-    public void addEventInt(Event event)  
-    {   
-        //System.out.println(prof);
-        Timestamp time = new Timestamp(System.currentTimeMillis());
-        event.setTime(time);
-        event.setValid(false);
-        event.setColor("");
-        //event.getPlayer().setName("None");
-        event.setType("Interruption");
-        eventRepository.save(event);    
-    }
-
-    public void addEventRes(Event event)  
-    {   
-        //System.out.println(prof);
-        Timestamp time = new Timestamp(System.currentTimeMillis());
-        event.setTime(time);
-        event.setValid(false);
-        event.setColor("");
-        //event.getPlayer().setName("None");
-        event.setType("Resume");
-        eventRepository.save(event);    
     }
 
     public Optional<Event> getEvent(int id) {

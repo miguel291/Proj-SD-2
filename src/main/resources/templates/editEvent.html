@@ -1,6 +1,6 @@
 <form th:action="@{/saveEvent}" method="post">
     <head>
-        <title>Card Event Registration</title>
+        <title>Event Registration</title>
         <link rel="stylesheet" href="/team.css"/>
         <meta charset="utf8"/>
     </head>
@@ -19,6 +19,7 @@
         <div>
             <label>Players</label>
             <select id="players" th:field="*{event.player}" size="10" multiple="multiple">
+                <option value="">null</option>
 				<option th:each="p : ${allPlayers}"
 						th:value="${{p}}"
 						th:text="${p.name}">
@@ -32,6 +33,13 @@
 						th:text="${g}">
 					The name
 				</option>
+			</select>
+            <label>Types</label>
+            <select id="type" th:field="*{event.type}" size="10" multiple="multiple">
+				<option value="Card">Card</option>
+                <option value="Resume">Resume</option>
+                <option value="Interruption">Interruption</option>
+                <option value="Goal">Goal</option>
 			</select>
         </div>
         <button type="submit">Register Card Event</button>
