@@ -72,7 +72,6 @@ public class EventService
 
     public void validateEvents(int id){
         eventRepository.validateEvents(id);
-
     }
 
     /*public List<List<Object>> insertInt(){
